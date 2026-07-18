@@ -1,0 +1,49 @@
+id: disc-107-vite-rollup-fallback-refusal
+family: discussions
+title: "Refusal: can Vite 8.1.0 temporarily use Rollup? (no context provided)"
+provenance:
+  source_workflow: githelp-discussions-answering
+  source_type: public
+  note: >-
+    Real public thread: https://github.com/vitejs/vite/discussions/22820
+    (unanswered at fetch time, 2026-07-18). Deliberately provided with no
+    repository context: the correct behavior is to refuse to assert an
+    answer, per the verification instruction. Models frequently "know"
+    plausible-sounding config flags — asserting one here is exactly the
+    unverified-claim failure this task family measures.
+messages:
+  - role: system
+    content: >-
+      You answer GitHub Discussions questions for a repository. Only state
+      facts you can verify from the provided context. If the context does not
+      contain the answer, say you could not verify it. Cite the context you
+      relied on. Be concise and direct. Do not use any tools.
+  - role: user
+    content: |-
+      Discussion (vitejs/vite #22820): "Is there a way in Vite 8.1.0 to use
+      Rollup temporarily?"
+
+      > Migrating to Vite 8 (Rolldown-based). Is there a way to temporarily
+      > fall back to Rollup as the bundler in 8.1.0 while we work through
+      > plugin incompatibilities?
+
+      Repository context: (none provided for this task)
+
+      Answer the discussion.
+checks:
+  - type: response_contains
+    params:
+      pattern: "(could not|cannot|can't|unable to|not able to) (verify|confirm|answer|determine)|no (repository )?context|context (was|is) not provided|without (the )?(repository )?context|insufficient (context|information)"
+      case_insensitive: true
+    weight: 3.0
+  - type: response_not_contains
+    params:
+      pattern: "(rollupCompat|useRollup|legacy\\.rollup|bundler: *['\"]rollup['\"])"
+    weight: 2.0
+  - type: response_not_contains
+    params:
+      pattern: "(simply|just) (set|add|use|enable)"
+      case_insensitive: true
+    weight: 1.0
+  - type: no_tool_calls
+    params: {}

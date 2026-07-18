@@ -1,0 +1,54 @@
+id: disc-103-vite-oxc-react-compiler
+family: discussions
+title: "Vite + Oxc Transform + React Compiler without Babel"
+provenance:
+  source_workflow: githelp-discussions-answering
+  source_type: public
+  note: >-
+    Real public thread: https://github.com/vitejs/vite/discussions/22949
+    (answered). Thread excerpt quoted verbatim (trimmed); the
+    repository-context block is curated from the thread's accepted answer.
+    Fetched 2026-07-18.
+messages:
+  - role: system
+    content: >-
+      You answer GitHub Discussions questions for a repository. Only state
+      facts you can verify from the provided context. If the context does not
+      contain the answer, say you could not verify it. Cite the context you
+      relied on. Be concise and direct. Do not use any tools.
+  - role: user
+    content: |-
+      Discussion (vitejs/vite #22949): "Vite + Oxc Transform + React Compiler"
+
+      > How does one tie together Vite and Oxc Transform's implementation of
+      > React Compiler? The default `npm create vite@latest` uses
+      > `@vitejs/plugin-react` plus `@rolldown/plugin-babel` with
+      > `reactCompilerPreset()`, which relies on Babel. Trying `unplugin-oxc`
+      > instead causes a double-import of React and the classic
+      > "Invalid hook call" error.
+
+      Repository context (curated from the accepted answer on the same thread):
+
+      - You can drop both `@vitejs/plugin-react` and the Babel plugin. Oxc
+        Transform's React Compiler runs at the Rolldown transform layer — no
+        Babel needed.
+
+      Answer the discussion.
+checks:
+  - type: response_contains
+    params:
+      pattern: "@vitejs/plugin-react"
+    weight: 1.0
+  - type: response_contains
+    params:
+      # Grader fixed after first sweep: was case-sensitive and missed
+      # "Babel is unnecessary" phrasing — a correct answer scored 0.60.
+      pattern: "(no|without|drop|remove|not needed|unnecessary).{0,60}babel|babel.{0,60}(not needed|unnecessary|can be (dropped|removed))"
+      case_insensitive: true
+    weight: 2.0
+  - type: response_not_contains
+    params:
+      pattern: "(could not|cannot|can't|unable to) (verify|confirm)"
+      case_insensitive: true
+  - type: no_tool_calls
+    params: {}

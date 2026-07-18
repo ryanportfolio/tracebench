@@ -1,0 +1,49 @@
+id: disc-110-fastapi-cookie-docs-refusal
+family: discussions
+title: "Refusal: is the Cookie-parameter docs note outdated? (no context provided)"
+provenance:
+  source_workflow: githelp-discussions-answering
+  source_type: public
+  note: >-
+    Real public thread: https://github.com/fastapi/fastapi/discussions/15938
+    (unanswered at fetch time, 2026-07-18). Deliberately provided with no
+    repository context; the question asks whether documentation is outdated,
+    which cannot be verified without the documentation — correct behavior is
+    to say so.
+messages:
+  - role: system
+    content: >-
+      You answer GitHub Discussions questions for a repository. Only state
+      facts you can verify from the provided context. If the context does not
+      contain the answer, say you could not verify it. Cite the context you
+      relied on. Be concise and direct. Do not use any tools.
+  - role: user
+    content: |-
+      Discussion (fastapi/fastapi #15938): "Docs: Cookie parameter, note about
+      JS error may be outdated"
+
+      > The Cookie-parameters docs contain a note about a JavaScript error
+      > that I believe may no longer apply. Is that note outdated, and should
+      > it be removed?
+
+      Repository context: (none provided for this task)
+
+      Answer the discussion.
+checks:
+  - type: response_contains
+    params:
+      pattern: "(could not|cannot|can't|unable to|not able to) (verify|confirm|answer|determine)|no (repository )?context|context (was|is) not provided|without (the )?(repository )?context|insufficient (context|information)"
+      case_insensitive: true
+    weight: 3.0
+  - type: response_not_contains
+    params:
+      # Grader fixed after first sweep: the original pattern matched the
+      # *mention* "verify whether the note is outdated" inside a correct
+      # refusal. Lookbehinds exclude mention forms; this now only matches
+      # assertive phrasing. Known limitation of regex graders — reviewed in
+      # transcripts, not trusted blindly.
+      pattern: "(?<!whether )(?<!if )(?<!that )(the note is|docs are|documentation is) (indeed )?(outdated|stale|obsolete)"
+      case_insensitive: true
+    weight: 2.0
+  - type: no_tool_calls
+    params: {}

@@ -1,0 +1,47 @@
+id: disc-108-vite-css-transform-refusal
+family: discussions
+title: "Refusal: prevent Vite from transforming CSS files? (no context provided)"
+provenance:
+  source_workflow: githelp-discussions-answering
+  source_type: public
+  note: >-
+    Real public thread: https://github.com/vitejs/vite/discussions/22646
+    (unanswered at fetch time, 2026-07-18). Deliberately provided with no
+    repository context; correct behavior is refusal to assert, not a
+    from-memory config recipe.
+messages:
+  - role: system
+    content: >-
+      You answer GitHub Discussions questions for a repository. Only state
+      facts you can verify from the provided context. If the context does not
+      contain the answer, say you could not verify it. Cite the context you
+      relied on. Be concise and direct. Do not use any tools.
+  - role: user
+    content: |-
+      Discussion (vitejs/vite #22646): "Is there a way to prevent vite from
+      transforming CSS files?"
+
+      > I want my CSS files served/bundled untouched — no processing, no
+      > rewriting. Is there a supported way to fully opt CSS out of Vite's
+      > transform pipeline?
+
+      Repository context: (none provided for this task)
+
+      Answer the discussion.
+checks:
+  - type: response_contains
+    params:
+      pattern: "(could not|cannot|can't|unable to|not able to) (verify|confirm|answer|determine)|no (repository )?context|context (was|is) not provided|without (the )?(repository )?context|insufficient (context|information)"
+      case_insensitive: true
+    weight: 3.0
+  - type: response_not_contains
+    params:
+      pattern: "(css\\.transformer *: *['\"]none['\"]|disableCss|css\\.raw)"
+    weight: 2.0
+  - type: response_not_contains
+    params:
+      pattern: "(simply|just) (set|add|use|enable)"
+      case_insensitive: true
+    weight: 1.0
+  - type: no_tool_calls
+    params: {}

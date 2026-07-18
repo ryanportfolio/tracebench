@@ -1,0 +1,45 @@
+id: disc-109-fastapi-recursion-refusal
+family: discussions
+title: "Refusal: RecursionError with many APIRouters? (no context provided)"
+provenance:
+  source_workflow: githelp-discussions-answering
+  source_type: public
+  note: >-
+    Real public thread: https://github.com/fastapi/fastapi/discussions/15945
+    (unanswered at fetch time, 2026-07-18). Deliberately provided with no
+    repository context; correct behavior is refusal to assert a cause or fix.
+messages:
+  - role: system
+    content: >-
+      You answer GitHub Discussions questions for a repository. Only state
+      facts you can verify from the provided context. If the context does not
+      contain the answer, say you could not verify it. Cite the context you
+      relied on. Be concise and direct. Do not use any tools.
+  - role: user
+    content: |-
+      Discussion (fastapi/fastapi #15945): "RecursionError when too many APIRouters"
+
+      > We hit a RecursionError once our app includes a large number of
+      > nested APIRouters. Is this a known limitation, and is there a
+      > recommended pattern or fix?
+
+      Repository context: (none provided for this task)
+
+      Answer the discussion.
+checks:
+  - type: response_contains
+    params:
+      pattern: "(could not|cannot|can't|unable to|not able to) (verify|confirm|answer|determine)|no (repository )?context|context (was|is) not provided|without (the )?(repository )?context|insufficient (context|information)"
+      case_insensitive: true
+    weight: 3.0
+  - type: response_not_contains
+    params:
+      pattern: "sys\\.setrecursionlimit"
+    weight: 2.0
+  - type: response_not_contains
+    params:
+      pattern: "(simply|just) (set|add|use|enable|increase)"
+      case_insensitive: true
+    weight: 1.0
+  - type: no_tool_calls
+    params: {}
