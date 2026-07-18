@@ -7,23 +7,23 @@
 **Can your AI coding agent admit it's wrong?**
 
 tracebench replays real moments from my months of daily agent-assisted
-development — the agent claimed something worked without checking, said
-"I can't" when it could, trusted stale data after a silently failed command —
-and scores what today's agent products actually do at exactly those decision
-points.
+development: the agent claimed something worked without checking, said
+"I can't" when it could, trusted stale data after a silently failed command.
+Each task freezes one of those moments and scores what today's agent
+products actually do at exactly that decision point.
 
 - **Real, not invented.** Every task is distilled from one of my real
   sessions and carries a provenance note tying it back to the workflow it
-  came from — at the strength that's actually true, stated per family. Private
+  came from, at the strength that's actually true, stated per family. Private
   material is never published; such tasks are labeled synthetic
   reconstructions ([privacy rule](#privacy-rule)).
 - **Reproducible.** Grading is deterministic (weighted pattern checklists,
   no hidden judge). Anyone can re-run scoring over the published transcripts
-  and get the identical numbers — CI re-verifies this on every push and
+  and get the identical numbers; CI re-verifies this on every push and
   weekly ([`scripts/check_regrade_drift.py`](scripts/check_regrade_drift.py)).
 - **Receipts included.** Every transcript, per-check verdict, score, and
   grader change is committed to this repo. Failures are annotated, not
-  hidden — they are the product.
+  hidden; they are the product.
 
 ## Results at a glance
 
@@ -35,7 +35,7 @@ Agent-product lane: each model driven through its real CLI harness
 | `discussions` (10 tasks) | verify facts before answering; refuse when unverifiable | 1.00 | 1.00 |
 | `correction` (8 tasks) | own mistakes and self-correct under user pushback | 0.96 | 0.81 |
 
-The `discussions` family is **saturated** — every run passes every check for
+The `discussions` family is **saturated**: every run passes every check for
 both products. It stays in the weekly sweep as a regression canary (a product
 update that breaks verification behavior shows up as the first score below
 1.00); the discriminating signal today is in `correction`, and the upcoming
@@ -43,7 +43,7 @@ tool-use and long-horizon families are designed with injected failures so
 they don't saturate.
 
 Headline finding so far: both products reliably deny a destructive action
-they didn't take and propose safe read-only checks — but almost never
+they didn't take and propose safe read-only checks, but almost never
 recognize that their own earlier "everything is fine" claim rested on stale
 local state after a silently failed fetch (`corr-208`, the hardest task in
 the suite: 0.78 vs 0.63). Full failure analysis per run in
@@ -66,7 +66,7 @@ Three task families, all derived from real workflows:
 | `tool_use` | Agent workflow steps: `gh api` queries, file edits, multi-step git flows | Tool selection, argument correctness, error recovery after an injected tool failure |
 | `long_horizon` | Multi-step pipelines (scout → rank → read → draft) | Completion without human rescue, budget discipline, silent step-dropping |
 
-v1 targets 20–30 tasks total. Every task file records provenance (what real
+v1 targets 20-30 tasks total. Every task file records provenance (what real
 workflow it came from), the exact prompt and context, tools available, and the
 grading spec.
 
@@ -108,10 +108,10 @@ because they answer different questions:
 | Drives | Provider APIs directly | Local agent CLIs headlessly (`claude -p`, `codex exec`) |
 | Measures | The model, params pinned in config | The model **plus** its product harness (vendor system prompt, tools, scaffolding) |
 | Pinned by | Exact model ID + params | Model ID + recorded CLI version (`provider_version` in every transcript) |
-| Determinism | Fixed seeds where supported | None promised — no temperature/seed control; N≥3 and spread do the work |
+| Determinism | Fixed seeds where supported | None promised: no temperature/seed control; N≥3 and spread do the work |
 | Cost | Metered per token, budget-capped | Subscription; zero marginal cost, modest headless volume only |
 
-Agent-product results are confounded by the product harness by construction —
+Agent-product results are confounded by the product harness by construction;
 that is the point (it is how these agents are actually used day to day), and
 results from this lane are always labeled as product-level, never presented
 as model-level. Two residual caveats, stated plainly: product harnesses
@@ -133,7 +133,7 @@ synthetic material and the provenance note says so
 ## Honest limits
 
 This is a solo project. The results are one practitioner's workflow-specific
-evals — useful signal about these workflows, not a general benchmark. The N
+evals: useful signal about these workflows, not a general benchmark. The N
 is small and the statistics are descriptive (mean and spread), not claims of
 significance. Where something could not be verified, it is reported as "could
 not verify", never guessed. The framing throughout is neutral and
@@ -158,7 +158,7 @@ Two presentation layers, same artifacts, both derived only from
   the committed published runs: <https://ryanportfolio.github.io/tracebench/>
 
 - **Static report** (`tracebench report --run-dir … --out report.html`): a
-  single self-contained HTML file per run — the archival layer that gets
+  single self-contained HTML file per run, the archival layer that gets
   committed alongside published results and works from `file://` forever.
 
 The UI's TypeScript types are generated from the harness's pydantic models
@@ -177,14 +177,14 @@ uv run tracebench validate tasks  # validate all committed task files
 uv run tracebench run --config configs/dryrun.yaml --out .tmp/dryrun
 ```
 
-The dry run uses the mock provider: zero API spend, but the full pipeline —
-load → complete → grade → aggregate → cost report — runs for real.
+The dry run uses the mock provider: zero API spend, but the full pipeline
+(load → complete → grade → aggregate → cost report) runs for real.
 
 ## Repository layout
 
 ```
 src/tracebench/    harness: models, providers, graders, runner, budget, CLI
-tasks/             task files (YAML, one per task) — see tasks/README.md
+tasks/             task files (YAML, one per task); see tasks/README.md
 configs/           committed run configs (model IDs, params, pricing, budget)
 tests/             pytest suite for the harness (graders are code; code gets tests)
 results/           published scored results per run (curated, committed)
@@ -194,18 +194,18 @@ taxonomy.md        living failure taxonomy, linking to example transcripts
 
 ## Roadmap
 
-- ✅ **Phase 0** — scaffold, harness skeleton, mock provider, CI, plus
+- ✅ **Phase 0**: scaffold, harness skeleton, mock provider, CI, plus
   agent-product lane adapters (Claude Code, Codex CLI).
-- ✅ **Phase 1** — anchor family: 10 discussions-answering tasks from public
+- ✅ **Phase 1**: anchor family: 10 discussions-answering tasks from public
   threads, deterministic graders, both CLI lanes swept and published
   (both products saturate the family at 1.00).
-- ✅ **Phase 2** — correction family: 8 frozen decision points from real
+- ✅ **Phase 2**: correction family: 8 frozen decision points from real
   sessions, both lanes swept, grader calibration trail published; weekly
   automated sweeps + CI reproducibility gate.
-- **Phase 3** — tool-use family with injected failures; API lane end-to-end.
-- **Phase 4** — long-horizon family; LLM-judge lane with agreement check;
+- **Phase 3**: tool-use family with injected failures; API lane end-to-end.
+- **Phase 4**: long-horizon family; LLM-judge lane with agreement check;
   taxonomy v1 fully populated with example transcripts.
-- **Phase 5** — transcript annotation polish; trace-teardown write-ups from
+- **Phase 5**: transcript annotation polish; trace-teardown write-ups from
   the best failures.
 
 ## Links
