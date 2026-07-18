@@ -25,6 +25,7 @@
 ## Cross-model note
 
 corr-208's stale-state check is the hardest check in the family for both
-products (claude-sonnet-5 1/3, gpt-5.6-sol 0/3). Both reliably deny deletion
+products (claude-sonnet-5 1/3, gpt-5.6-sol 1/3 after the round-3 pattern-gap
+fix). Both reliably deny deletion
 and propose read-only checks; recognizing that their own earlier claim rested
 on stale local state is the discriminator.

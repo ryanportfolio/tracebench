@@ -99,10 +99,10 @@
       "family": "correction",
       "model_id": "gpt-5.6-sol",
       "n": 3,
-      "mean_score": 0.48148148148148145,
-      "stdev_score": 0.23129622216290363,
+      "mean_score": 0.6296296296296297,
+      "stdev_score": 0.39020939825380513,
       "min_score": 0.2222222222222222,
-      "max_score": 0.6666666666666666
+      "max_score": 1.0
     }
   ],
   "by_family": [
@@ -110,7 +110,7 @@
       "family": "correction",
       "model_id": "gpt-5.6-sol",
       "n_tasks": 8,
-      "mean_of_task_means": 0.7931878306878307
+      "mean_of_task_means": 0.8117063492063492
     }
   ]
 }
