@@ -13,49 +13,42 @@ insisted "I can't touch the hosting platform" while the CLI it needed sat
 installed and authenticated. Each task freezes one of those decision points
 and scores what today's agent products do next.
 
-- **Session-derived.** Every task file names the workflow it came from,
-  what was altered in reconstruction, and how much weight that provenance
-  claim carries, stated per family. Private material is never published;
-  such tasks are labeled synthetic reconstructions
+- **Session-derived.** Each task file names its source workflow, what was
+  altered in reconstruction, and how much weight that provenance claim
+  carries. Nothing private is published; reconstructed tasks are labeled
   ([privacy rule](#privacy-rule)).
-- **Reproducible.** Grading is deterministic (weighted pattern checklists,
-  no hidden judge). Anyone can re-run scoring over the published transcripts
-  and get the identical numbers; CI re-verifies this on every push and
-  weekly ([`scripts/check_regrade_drift.py`](scripts/check_regrade_drift.py)).
-- **Receipts included.** Every transcript, per-check verdict, score, and
-  grader change is committed to this repo. Failures are annotated, not
-  hidden; they are the product.
+- **Reproducible.** Grading is deterministic: weighted pattern checklists,
+  no hidden judge. Re-run scoring over the published transcripts and you
+  get identical numbers; CI verifies this on every push and weekly
+  ([`scripts/check_regrade_drift.py`](scripts/check_regrade_drift.py)).
+- **Receipts included.** Every transcript, check verdict, score, and grader
+  change is committed here. Failures are annotated, not hidden.
 
 ## Results at a glance
 
-Agent-product lane: each model driven through the same CLI developers use
-day to day (`claude -p`, `codex exec`), N=3 runs per task, scores are mean
-of task means.
+Agent-product lane: each model driven through its own CLI (`claude -p`,
+`codex exec`), N=3 runs per task; scores are means of task means.
 
 | Task family | What it tests | claude-sonnet-5 (Claude Code CLI) | gpt-5.6-sol (Codex CLI) |
 |---|---|---:|---:|
 | `discussions` (10 tasks) | verify facts before answering; refuse when unverifiable | 1.00 | 1.00 |
 | `correction` (8 tasks) | own mistakes and self-correct under user pushback | 0.96 | 0.81 |
 
-The `discussions` family is **saturated**: every run passes every check for
-both products. It stays in the weekly sweep as a regression canary (a product
-update that breaks verification behavior shows up as the first score below
-1.00); the discriminating signal today is in `correction`, and the upcoming
-tool-use and long-horizon families are designed with injected failures so
-they don't saturate.
+`discussions` is **saturated**: every run passes every check for both
+products. It stays in the weekly sweep as a regression canary; the
+discriminating signal today is in `correction`. The upcoming tool-use and
+long-horizon families use injected failures so they don't saturate.
 
-Headline finding so far: both products reliably deny a destructive action
-they didn't take and propose safe read-only checks, but almost never
-recognize that their own earlier "everything is fine" claim rested on stale
-local state after a silently failed fetch (`corr-208`, the hardest task in
-the suite: 0.78 vs 0.63). Full failure analysis per run in
+Headline finding: both products deny a destructive action they didn't take
+and propose safe read-only checks, but rarely notice their own earlier
+claim rested on stale state after a silently failed fetch (`corr-208`,
+hardest task: 0.78 vs 0.63). Per-run failure analysis:
 [`results/runs/*/NOTES.md`](results/runs/).
 
 **Explore every transcript in the [live dashboard](https://ryanportfolio.github.io/tracebench/).**
 
-New results land automatically: a weekly scheduled sweep re-runs the suite
-through both CLIs, self-checks reproducibility, and publishes the dated run
-(`results/runs/sched-*`).
+New results land weekly: a scheduled sweep re-runs both CLIs, checks
+reproducibility, and publishes a dated run (`results/runs/sched-*`).
 
 ## What this measures
 
@@ -68,42 +61,38 @@ Four task families, each traced to a specific workflow:
 | `tool_use` | Agent workflow steps: `gh api` queries, file edits, multi-step git flows | Tool selection, argument correctness, error recovery after an injected tool failure |
 | `long_horizon` | Multi-step pipelines (scout → rank → read → draft) | Completion without human rescue, budget discipline, silent step-dropping |
 
-v1 targets 20-30 tasks total. Every task file records provenance (which
-workflow it came from), the exact prompt and context, tools available, and the
-grading spec.
+v1 targets 20-30 tasks. Each task file records provenance, the exact
+prompt and context, available tools, and the grading spec.
 
 ## Method
 
-- **Deterministic grading first.** Exact tool-call checks, schema validation,
-  citation-resolution checks. LLM-as-judge only where unavoidable (prose
-  quality), and then with a committed rubric, a judge from a different
-  provider than the model under test, and a human-labeled agreement set
-  measuring judge reliability before the judge is trusted.
-- **No single-run scores.** N≥3 runs per task per model; results report mean
-  and spread. Fixed seeds where the API supports them; the seed is recorded
+- **Deterministic grading first.** Exact tool-call checks, schema
+  validation, citation-resolution checks. LLM-as-judge only where
+  unavoidable (prose quality), with a committed rubric, a judge from a
+  different provider than the model under test, and a human-labeled
+  agreement set measuring judge reliability first.
+- **No single-run scores.** N≥3 runs per task per model; results report
+  mean and spread. Seeds fixed where the API supports them, recorded
   either way.
 - **Pinned configs.** Exact model IDs and params live in committed run
-  configs. No score is reported without its full config.
-- **Failures are the product.** Every failure ships as a full annotated
-  transcript: what happened, a hypothesis for why, and a bucket in the
+  configs; no score without its config.
+- **Failures are the product.** Every failure ships as an annotated
+  transcript: what happened, a hypothesis for why, and its bucket in the
   [failure taxonomy](taxonomy.md). A run where everything passes teaches
   nothing.
-- **Budget discipline.** Hard per-run spend cap in config; the runner halts
-  rather than overspending, and prints a cost report every run.
-- **Grader fixes never re-run models.** Transcripts store the full output;
-  `tracebench regrade` rescores a stored run under the current graders with
-  zero model calls, so a grader bug is corrected in place and the published
-  board stays on one grader version. Every grader-bug round to date (and
-  what it was) is documented in `results/runs/*/NOTES.md`.
+- **Budget discipline.** Hard per-run spend cap; the runner halts rather
+  than overspend and prints a cost report.
+- **Grader fixes never re-run models.** Transcripts store full output;
+  `tracebench regrade` rescores a stored run with zero model calls, so the
+  published board stays on one grader version. Every grader-bug round is
+  documented in `results/runs/*/NOTES.md`.
 
-Scoring outputs are designed to be reusable downstream as training-data
-filters for a planned small-scale SFT/DPO post-training project, with this
-suite as the before/after measuring stick.
+Scores double as training-data filters for a planned small SFT/DPO
+post-training project, with this suite as the before/after measuring stick.
 
 ## Two lanes: raw API vs agent product
 
-The suite runs the same tasks through two deliberately different lanes,
-because they answer different questions:
+Same tasks, two lanes, answering different questions:
 
 | | API lane | Agent-product lane |
 |---|---|---|
@@ -113,60 +102,54 @@ because they answer different questions:
 | Determinism | Fixed seeds where supported | None promised: no temperature/seed control; N≥3 and spread do the work |
 | Cost | Metered per token, budget-capped | Subscription; zero marginal cost, modest headless volume only |
 
-Agent-product results are confounded by the product harness by construction;
-that is the point (it is how these agents are actually used day to day), and
-results from this lane are always labeled as product-level, never presented
-as model-level. Two residual caveats, stated plainly: product harnesses
-change over time (hence the recorded CLI version), and user-level global
-agent config on the machine running the sweep can influence behavior even
-though each run executes in an isolated empty directory. Tasks that define
-their own tools run only in the API lane, where the tool schema can actually
-be injected.
+Agent-product results include the product harness by construction; that is
+the point, since that is how these agents get used. They are always labeled
+product-level, never model-level. Two caveats: harnesses change over time
+(hence the recorded CLI version), and machine-level agent config can
+influence behavior even though each run executes in an isolated empty
+directory. Tasks that define their own tools run only in the API lane,
+where the tool schema can be injected.
 
 ## Privacy rule
 
-Nothing from private repositories appears in any published task, fixture, or
-transcript. Tasks are built from public sources (public discussion threads,
-public repos) or synthetic reconstructions. When a failure in a private
-workflow inspires a task, it is rebuilt with public or synthetic material
-and the provenance note says so
+Nothing from private repositories appears in any published task, fixture,
+or transcript. Tasks come from public sources or synthetic reconstructions;
+when a private-workflow failure inspires a task, it is rebuilt from public
+or synthetic material and the provenance note says so
 (`source_type: synthetic_reconstruction`).
 
 ## Honest limits
 
-This is a solo project. The results are one practitioner's workflow-specific
-evals: useful signal about these workflows, not a general benchmark. The N
-is small and the statistics are descriptive (mean and spread), not claims of
-significance. Where something could not be verified, it is reported as "could
-not verify", never guessed. The framing throughout is neutral and
-evidence-first; the goal is understanding failure modes, not ranking vendors.
+A solo project. Results are one practitioner's workflow-specific evals:
+signal about these workflows, not a general benchmark. N is small;
+statistics are descriptive (mean, spread), not significance claims.
+Anything unverifiable is reported as "could not verify", never guessed. The
+goal is understanding failure modes, not ranking vendors.
 
 ## Results UI
 
-Two presentation layers, same artifacts, both derived only from
-`results.json` + `transcripts.jsonl`:
+Two presentation layers over the same artifacts (`results.json` +
+`transcripts.jsonl`):
 
-- **Dashboard app** (`ui/`, React + TypeScript): run picker, family
-  leaderboard, sortable per-task table, and a transcript explorer with
-  model/family/verdict filters and full-text search. Serve it over local
-  runs with one command:
+- **Dashboard** (`ui/`, React + TypeScript): run picker, family
+  leaderboard, per-task table, transcript explorer with filters and
+  full-text search. Serve it locally:
 
   ```sh
   npm --prefix ui install && npm --prefix ui run build   # once
   uv run tracebench ui --runs-dir .tmp/runs              # http://127.0.0.1:8321
   ```
 
-  The same build deploys to GitHub Pages on every push to `main`, serving
-  the committed published runs: <https://ryanportfolio.github.io/tracebench/>
+  Deploys to GitHub Pages on every push to `main`, serving the committed
+  published runs: <https://ryanportfolio.github.io/tracebench/>
 
-- **Static report** (`tracebench report --run-dir … --out report.html`): a
-  single self-contained HTML file per run, the archival layer that gets
-  committed alongside published results and works from `file://` forever.
+- **Static report** (`tracebench report --run-dir … --out report.html`):
+  one self-contained HTML file per run; the archival layer, committed
+  alongside published results, works from `file://` forever.
 
 The UI's TypeScript types are generated from the harness's pydantic models
-via exported JSON Schema (`uv run tracebench schema --out ui/schema`, then
-`npm --prefix ui run codegen`); CI fails if the schemas, the generated types,
-or the models drift apart.
+via exported JSON Schema; CI fails if models, schemas, or generated types
+drift.
 
 ## Quickstart
 
@@ -196,17 +179,16 @@ taxonomy.md        living failure taxonomy, linking to example transcripts
 
 ## Roadmap
 
-- ✅ **Phase 0**: scaffold, harness skeleton, mock provider, CI, plus
-  agent-product lane adapters (Claude Code, Codex CLI).
-- ✅ **Phase 1**: anchor family: 10 discussions-answering tasks from public
-  threads, deterministic graders, both CLI lanes swept and published
-  (both products saturate the family at 1.00).
-- ✅ **Phase 2**: correction family: 8 frozen decision points from past
-  sessions, both lanes swept, grader calibration trail published; weekly
-  automated sweeps + CI reproducibility gate.
+- ✅ **Phase 0**: scaffold, harness, mock provider, CI, agent-product lane
+  adapters (Claude Code, Codex CLI).
+- ✅ **Phase 1**: 10 discussions tasks from public threads, deterministic
+  graders, both CLI lanes swept and published (saturated at 1.00).
+- ✅ **Phase 2**: correction family (8 tasks), both lanes swept, grader
+  calibration trail published; weekly automated sweeps + CI
+  reproducibility gate.
 - **Phase 3**: tool-use family with injected failures; API lane end-to-end.
 - **Phase 4**: long-horizon family; LLM-judge lane with agreement check;
-  taxonomy v1 fully populated with example transcripts.
+  taxonomy v1 populated with example transcripts.
 - **Phase 5**: transcript annotation polish; trace-teardown write-ups from
   the best failures.
 
