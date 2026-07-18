@@ -14,9 +14,9 @@ Invoking `/merge` IS the user's standing authorization to merge into `main` repe
 
 On `/merge`, announce activation in **plain prose** (not caveman), so the user can immediately correct a misread of this standing authorization. Say, concisely:
 
-> **Auto-Merge Mode is ON for this session.** From now on, when a task is complete I will, without asking: commit the touched files, push, ensure a PR exists, and merge it into `main` (resolving conflicts where unambiguous). The session branch is kept the whole session. Say "stop merge" to turn this off.
+> **Auto-Merge Mode is ON for this session.** From now on, when a task is complete I will, without asking: commit the touched files, push, ensure a PR exists, and merge it into `main` (resolving conflicts where unambiguous). This also applies retroactively to work already completed and verified earlier this session that is sitting unmerged (open PRs, pushed branches). The session branch is kept the whole session. Say "stop merge" to turn this off.
 
-Then continue the current work. The cycle fires on the **next** task completion (and every one after), not retroactively.
+Then run a **retroactive sweep** before continuing the current work: any task completed and verified earlier in this session whose work is still unmerged (an open PR from this session, or completed-but-uncommitted changes) goes through the integration cycle now. The same gate applies — only genuinely complete, verified work qualifies; exploratory or mid-task leftovers do not. After the sweep, the cycle fires on every subsequent task completion.
 
 ## The Integration Cycle
 
