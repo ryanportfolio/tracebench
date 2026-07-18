@@ -4,6 +4,10 @@ on:
   pull_request:
   push:
     branches: [main]
+  schedule:
+    # Weekly deterministic sweep of the free gates (no model calls):
+    # lint, tests, task validation, regrade drift, schema/codegen drift.
+    - cron: "0 8 * * 1"
 
 jobs:
   test:
@@ -27,6 +31,9 @@ jobs:
 
       - name: Validate committed tasks
         run: uv run tracebench validate tasks
+
+      - name: Regrade drift — published runs reproduce under graders at HEAD
+        run: uv run python scripts/check_regrade_drift.py
 
       - name: Dry run (mock provider, zero spend)
         run: uv run tracebench run --config configs/dryrun.yaml --out .tmp/ci-dryrun
