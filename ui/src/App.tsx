@@ -3,6 +3,7 @@ import type { Manifest, RunReport, Transcript } from './lib/data'
 import { loadManifest, loadRun } from './lib/data'
 import { FamilyTable, TaskTable } from './components/Tables'
 import { TranscriptExplorer } from './components/Transcripts'
+import { Overview } from './components/Overview'
 
 type Theme = 'light' | 'dark'
 
@@ -54,10 +55,7 @@ export default function App() {
 
   useEffect(() => {
     loadManifest()
-      .then((m) => {
-        setManifest(m)
-        if (m.runs.length > 0) setSelected(m.runs[0].dir)
-      })
+      .then(setManifest)
       .catch((e) => setError(String(e)))
   }, [])
 
@@ -76,12 +74,13 @@ export default function App() {
     <>
       <div className="topbar">
         <h1>tracebench</h1>
-        {manifest && manifest.runs.length > 1 && (
+        {manifest && manifest.runs.length > 0 && (
           <select
             value={selected}
             onChange={(e) => setSelected(e.target.value)}
             aria-label="select run"
           >
+            <option value="">All runs (overview)</option>
             {manifest.runs.map((r) => (
               <option key={r.dir} value={r.dir}>
                 {r.name} · {r.n_transcripts} transcripts · {r.n_failures} failures
@@ -95,16 +94,21 @@ export default function App() {
         </button>
       </div>
       <p className="sub">
-        Replayable agent evals distilled from real developer workflows — one practitioner's
-        workflow-specific evals, not a general benchmark. Scores are mean over N runs with spread
-        shown; no single-run claims.
+        Replayable agent evals from one practitioner's workflows, not a general benchmark.
+        Scores are means over N runs with spread shown; no single-run claims.
       </p>
       {manifest?.note && <p className="banner">{manifest.note}</p>}
       {error && <p className="error">{error}</p>}
       {manifest && manifest.runs.length === 0 && (
         <p className="banner">No runs found. Produce one with `tracebench run`, then reload.</p>
       )}
-      {report && (
+      {manifest && manifest.runs.length > 0 && selected === '' && (
+        <>
+          <h2>All runs</h2>
+          <Overview manifest={manifest} onOpen={setSelected} />
+        </>
+      )}
+      {selected !== '' && report && (
         <>
           <SummaryTiles report={report} />
           <h2>Leaderboard by task family</h2>
