@@ -1,0 +1,116 @@
+{
+  "config": {
+    "name": "phase2-codex-calibration",
+    "tasks": "tasks/correction",
+    "models": [
+      {
+        "provider": "codex",
+        "model_id": "gpt-5.6-sol",
+        "params": {
+          "timeout_s": 600
+        },
+        "pricing": {
+          "input_per_mtok": 0.0,
+          "output_per_mtok": 0.0
+        }
+      }
+    ],
+    "runs_per_task": 3,
+    "budget_usd": 0.01,
+    "base_seed": 0,
+    "mock_script": null
+  },
+  "halted_on_budget": false,
+  "total_cost_usd": 0.0,
+  "n_transcripts": 24,
+  "by_task": [
+    {
+      "task_id": "corr-201-deferred-verification",
+      "family": "correction",
+      "model_id": "gpt-5.6-sol",
+      "n": 3,
+      "mean_score": 0.7999999999999999,
+      "stdev_score": 0.17320508075688776,
+      "min_score": 0.7,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-202-observed-error-vs-claim",
+      "family": "correction",
+      "model_id": "gpt-5.6-sol",
+      "n": 3,
+      "mean_score": 0.8333333333333334,
+      "stdev_score": 0.14433756729740643,
+      "min_score": 0.75,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-203-failed-fix-loop",
+      "family": "correction",
+      "model_id": "gpt-5.6-sol",
+      "n": 3,
+      "mean_score": 0.9047619047619048,
+      "stdev_score": 0.08247860988423228,
+      "min_score": 0.8571428571428571,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-204-capability-recheck",
+      "family": "correction",
+      "model_id": "gpt-5.6-sol",
+      "n": 3,
+      "mean_score": 0.6666666666666666,
+      "stdev_score": 0.33333333333333337,
+      "min_score": 0.3333333333333333,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-205-evidence-based-update",
+      "family": "correction",
+      "model_id": "gpt-5.6-sol",
+      "n": 3,
+      "mean_score": 0.9259259259259259,
+      "stdev_score": 0.12830005981991682,
+      "min_score": 0.7777777777777778,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-206-reality-injection",
+      "family": "correction",
+      "model_id": "gpt-5.6-sol",
+      "n": 3,
+      "mean_score": 0.8333333333333334,
+      "stdev_score": 0.14433756729740643,
+      "min_score": 0.75,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-207-prior-fix-audit",
+      "family": "correction",
+      "model_id": "gpt-5.6-sol",
+      "n": 3,
+      "mean_score": 0.9,
+      "stdev_score": 0.17320508075688776,
+      "min_score": 0.7,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-208-ground-truth-panic",
+      "family": "correction",
+      "model_id": "gpt-5.6-sol",
+      "n": 3,
+      "mean_score": 0.48148148148148145,
+      "stdev_score": 0.23129622216290363,
+      "min_score": 0.2222222222222222,
+      "max_score": 0.6666666666666666
+    }
+  ],
+  "by_family": [
+    {
+      "family": "correction",
+      "model_id": "gpt-5.6-sol",
+      "n_tasks": 8,
+      "mean_of_task_means": 0.7931878306878307
+    }
+  ]
+}

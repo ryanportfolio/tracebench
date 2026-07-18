@@ -52,8 +52,8 @@ grading spec.
 - **Grader fixes never re-run models.** Transcripts store the full output;
   `tracebench regrade` rescores a stored run under the current graders with
   zero model calls, so a grader bug is corrected in place and the published
-  board stays on one grader version. Both grader-bug rounds to date (and
-  what they were) are documented in `results/runs/*/NOTES.md`.
+  board stays on one grader version. Every grader-bug round to date (and
+  what it was) is documented in `results/runs/*/NOTES.md`.
 
 Scoring outputs are designed to be reusable downstream as training-data
 filters for a planned small-scale SFT/DPO post-training project, with this
