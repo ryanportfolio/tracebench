@@ -6,17 +6,18 @@
 
 **Can your AI coding agent admit it's wrong?**
 
-tracebench replays real moments from my months of daily agent-assisted
-development: the agent claimed something worked without checking, said
-"I can't" when it could, trusted stale data after a silently failed command.
-Each task freezes one of those moments and scores what today's agent
-products actually do at exactly that decision point.
+tracebench replays moments from my agent sessions where things went
+sideways. A `git fetch` failed silently and the agent reported "nothing to
+pull, every origin commit is local" from stale cached refs. An agent
+insisted "I can't touch the hosting platform" while the CLI it needed sat
+installed and authenticated. Each task freezes one of those decision points
+and scores what today's agent products do next.
 
-- **Real, not invented.** Every task is distilled from one of my real
-  sessions and carries a provenance note tying it back to the workflow it
-  came from, at the strength that's actually true, stated per family. Private
-  material is never published; such tasks are labeled synthetic
-  reconstructions ([privacy rule](#privacy-rule)).
+- **Session-derived.** Every task file names the workflow it came from,
+  what was altered in reconstruction, and how much weight that provenance
+  claim carries, stated per family. Private material is never published;
+  such tasks are labeled synthetic reconstructions
+  ([privacy rule](#privacy-rule)).
 - **Reproducible.** Grading is deterministic (weighted pattern checklists,
   no hidden judge). Anyone can re-run scoring over the published transcripts
   and get the identical numbers; CI re-verifies this on every push and
@@ -27,8 +28,9 @@ products actually do at exactly that decision point.
 
 ## Results at a glance
 
-Agent-product lane: each model driven through its real CLI harness
-(`claude -p`, `codex exec`), N=3 runs per task, scores are mean of task means.
+Agent-product lane: each model driven through the same CLI developers use
+day to day (`claude -p`, `codex exec`), N=3 runs per task, scores are mean
+of task means.
 
 | Task family | What it tests | claude-sonnet-5 (Claude Code CLI) | gpt-5.6-sol (Codex CLI) |
 |---|---|---:|---:|
@@ -57,16 +59,16 @@ through both CLIs, self-checks reproducibility, and publishes the dated run
 
 ## What this measures
 
-Three task families, all derived from real workflows:
+Four task families, each traced to a specific workflow:
 
-| Family | Real workflow it came from | Graded on |
+| Family | Where it came from | Graded on |
 |---|---|---|
 | `discussions` | Side workflow: agent-assisted answering of public GitHub Discussions | Factual verification behavior, refusal when unverifiable, instruction following |
-| `correction` | Frozen decision points harvested from months of real agent sessions (reconstructed, labeled) | Correction uptake, evidence-based updating vs sycophancy, capability self-modeling, trust in subagent claims, ground-truthing under pressure |
+| `correction` | Frozen decision points harvested from months of agent sessions (reconstructed, labeled) | Correction uptake, evidence-based updating vs sycophancy, capability self-modeling, trust in subagent claims, ground-truthing under pressure |
 | `tool_use` | Agent workflow steps: `gh api` queries, file edits, multi-step git flows | Tool selection, argument correctness, error recovery after an injected tool failure |
 | `long_horizon` | Multi-step pipelines (scout → rank → read → draft) | Completion without human rescue, budget discipline, silent step-dropping |
 
-v1 targets 20-30 tasks total. Every task file records provenance (what real
+v1 targets 20-30 tasks total. Every task file records provenance (which
 workflow it came from), the exact prompt and context, tools available, and the
 grading spec.
 
@@ -125,9 +127,9 @@ be injected.
 
 Nothing from private repositories appears in any published task, fixture, or
 transcript. Tasks are built from public sources (public discussion threads,
-public repos) or synthetic-but-realistic reconstructions. When a real
-private-workflow failure inspires a task, it is rebuilt with public or
-synthetic material and the provenance note says so
+public repos) or synthetic reconstructions. When a failure in a private
+workflow inspires a task, it is rebuilt with public or synthetic material
+and the provenance note says so
 (`source_type: synthetic_reconstruction`).
 
 ## Honest limits
@@ -178,7 +180,7 @@ uv run tracebench run --config configs/dryrun.yaml --out .tmp/dryrun
 ```
 
 The dry run uses the mock provider: zero API spend, but the full pipeline
-(load → complete → grade → aggregate → cost report) runs for real.
+(load → complete → grade → aggregate → cost report) executes end-to-end.
 
 ## Repository layout
 
@@ -199,7 +201,7 @@ taxonomy.md        living failure taxonomy, linking to example transcripts
 - ✅ **Phase 1**: anchor family: 10 discussions-answering tasks from public
   threads, deterministic graders, both CLI lanes swept and published
   (both products saturate the family at 1.00).
-- ✅ **Phase 2**: correction family: 8 frozen decision points from real
+- ✅ **Phase 2**: correction family: 8 frozen decision points from past
   sessions, both lanes swept, grader calibration trail published; weekly
   automated sweeps + CI reproducibility gate.
 - **Phase 3**: tool-use family with injected failures; API lane end-to-end.
