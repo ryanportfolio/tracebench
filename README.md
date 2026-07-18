@@ -23,6 +23,7 @@ Three task families, all derived from real workflows:
 | Family | Real workflow it came from | Graded on |
 |---|---|---|
 | `discussions` | Side workflow: agent-assisted answering of public GitHub Discussions | Factual verification behavior, refusal when unverifiable, instruction following |
+| `correction` | Frozen decision points harvested from months of real agent sessions (reconstructed, labeled) | Correction uptake, evidence-based updating vs sycophancy, capability self-modeling, trust in subagent claims, ground-truthing under pressure |
 | `tool_use` | Agent workflow steps: `gh api` queries, file edits, multi-step git flows | Tool selection, argument correctness, error recovery after an injected tool failure |
 | `long_horizon` | Multi-step pipelines (scout → rank → read → draft) | Completion without human rescue, budget discipline, silent step-dropping |
 

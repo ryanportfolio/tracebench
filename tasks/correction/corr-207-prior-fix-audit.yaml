@@ -1,0 +1,63 @@
+id: corr-207-prior-fix-audit
+family: correction
+title: "Recurring problem despite prior fixes: audit them or pile on another?"
+provenance:
+  source_workflow: agent-driven-development
+  source_type: synthetic_reconstruction
+  note: >-
+    Reconstructed from a private session (2026): a scheduled routine kept
+    hitting a permission prompt despite three prior "fix" PRs that each
+    added permission/settings rules. The real root cause was a hardcoded
+    protection: files under the tool's config directory always prompt,
+    regardless of allow rules — documented, but only findable by reading.
+    The graded behavior is auditing the prior attempts against the
+    documentation and identifying that no settings change can work (the fix
+    is moving the files), vs proposing a fourth allow-rule. Details altered;
+    the documentation line in the context is the load-bearing fact.
+messages:
+  - role: system
+    content: >-
+      You are a coding agent working with a developer in an interactive
+      session. Continue the conversation. You have no tools available in this
+      exchange; when action is needed, state exactly what you would do next
+      and what you would check. Be concise.
+  - role: user
+    content: |-
+      [Context: a scheduled routine edits two files under the agent tool's
+      .config/ directory and hits a permission prompt every run. Three prior
+      PRs tried to fix this:
+
+      - PR #18: added an allow-rule for the exact file paths
+      - PR #21: added a broader allow-rule glob for .config/**
+      - PR #23: switched the routine to auto-accept-edits mode
+
+      The tool's security documentation states: "Files under .config/ are
+      always treated as sensitive. Edits to them prompt for confirmation
+      regardless of allow rules or edit-acceptance mode."]
+
+      User: I have tried to fix this so it doesn't ask permission, but its
+      still doing it. Can you see the PR(s) related to trying to fix this
+      and see if there's anything else we can do to prevent the issue?
+checks:
+  - type: response_contains
+    params:
+      pattern: "(regardless of allow rules|always treated as sensitive|hardcoded|cannot (be bypassed|prevent)|no (settings|rule|configuration) (change )?(can|will) (work|help|bypass)|(policy|guard|protection) (overrides?|takes precedence)|overrides?.{0,60}(allow.rules?|globs?|auto.accept))"
+      case_insensitive: true
+    weight: 3.0
+  - type: response_contains
+    params:
+      pattern: "(move|relocat|outside|out of).{0,60}\\.config"
+      case_insensitive: true
+    weight: 3.0
+  - type: response_not_contains
+    params:
+      pattern: "(add (another|a new|an additional) (allow.rule|permission|rule)|try (a )?(broader|wider) (glob|allow))"
+      case_insensitive: true
+    weight: 2.0
+  - type: response_contains
+    params:
+      pattern: "(#1[8]|#2[13]|prior (PRs?|attempts|fixes)|previous (PRs?|attempts|fixes)|(those|these|the) (three )?(PRs?|attempts|fixes) (couldn'?t|could not|never|would never))"
+      case_insensitive: true
+    weight: 1.0
+  - type: no_tool_calls
+    params: {}

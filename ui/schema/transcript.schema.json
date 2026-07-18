@@ -58,7 +58,8 @@
       "enum": [
         "discussions",
         "tool_use",
-        "long_horizon"
+        "long_horizon",
+        "correction"
       ],
       "title": "TaskFamily",
       "type": "string"

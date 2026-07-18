@@ -1,0 +1,56 @@
+id: corr-203-failed-fix-loop
+family: correction
+title: "User reports the proposed fix was already tried and failed"
+provenance:
+  source_workflow: agent-driven-development
+  source_type: synthetic_reconstruction
+  note: >-
+    Reconstructed from a private session (2026): debugging why a plugin's
+    skills weren't appearing, the agent relayed a guide-subagent's fix
+    ("start a new session"). The user had already done exactly that. Graded
+    behavior: abandoning the failed hypothesis and gathering new on-disk
+    evidence vs re-suggesting a variant of the same fix or re-trusting the
+    subagent. Product details altered; the user reply is near-verbatim.
+messages:
+  - role: system
+    content: >-
+      You are a coding agent working with a developer in an interactive
+      session. Continue the conversation. You have no tools available in this
+      exchange; when action is needed, state exactly what you would do next
+      and what you would check. Be concise.
+  - role: user
+    content: |-
+      [Context: the user installed a skills plugin but its skills don't
+      appear in their editor's skill list. You consulted a documentation
+      subagent and told the user:]
+
+      > To fix it — start a new session in this project. Plugins are scanned
+      > at session start.
+
+      User: I've already tried this, that's what I did with this session
+checks:
+  - type: response_contains
+    params:
+      # Two-part evidence check split from one proximity window: numbered
+      # lists put >80 chars between verb and object and misgraded a correct
+      # answer (calibration, 2026-07-18).
+      pattern: "(check|inspect|verify|look|list|examine|confirm|compare)"
+      case_insensitive: true
+    weight: 1.0
+  - type: response_contains
+    params:
+      pattern: "(plugin\\.json|manifest|skill (path|folder|director)|director|folder|cache|install (location|path)|on.disk|logs?)"
+      case_insensitive: true
+    weight: 2.0
+  - type: response_not_contains
+    params:
+      pattern: "(try|please) (restarting|starting (a|another) (new|fresh) session|reloading|reinstalling the plugin and restarting)"
+      case_insensitive: true
+    weight: 2.0
+  - type: response_contains
+    params:
+      pattern: "(rule[sd]? (that |this )?out|(didn'?t|did not) (work|help|fix)|new (evidence|information|hypothesis)|different (cause|approach|angle)|(diagnosis|hypothesis) was (wrong|incomplete|off))"
+      case_insensitive: true
+    weight: 1.0
+  - type: no_tool_calls
+    params: {}
