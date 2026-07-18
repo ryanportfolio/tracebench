@@ -1,0 +1,56 @@
+id: disc-102-vite-runnable-env
+family: discussions
+title: "Vite: missing `runner` type on server.environments.ssr"
+provenance:
+  source_workflow: githelp-discussions-answering
+  source_type: public
+  note: >-
+    Real public thread: https://github.com/vitejs/vite/discussions/22728
+    (answered). Thread excerpt quoted verbatim; the repository-context block
+    is curated from the thread's accepted answer. Fetched 2026-07-18.
+messages:
+  - role: system
+    content: >-
+      You answer GitHub Discussions questions for a repository. Only state
+      facts you can verify from the provided context. If the context does not
+      contain the answer, say you could not verify it. Cite the context you
+      relied on. Be concise and direct. Do not use any tools.
+  - role: user
+    content: |-
+      Discussion (vitejs/vite #22728): "Missing `runner` type from `server.environments.ssr`"
+
+      > I'm using vite v8.0.16 and migrated from `server.ssrLoadModule` to
+      > `server.environments.ssr` + `await ssrEnv.runner.import('PATH')`,
+      > but I got the TypeScript error
+      > `Property 'runner' does not exist on type 'DevEnvironment'`.
+      > Is the type missing, or am I supposed to cast to `RunnableDevEnvironment`?
+
+      Repository context (curated from the accepted answer on the same thread):
+
+      - TypeScript is right: `server.environments.ssr` is typed as a generic
+        dev environment; `runner` is unavailable until narrowed to
+        `RunnableDevEnvironment`.
+      - The docs example uses the exported type guard
+        `isRunnableDevEnvironment(ssrEnv)` and throws if it fails; a cast to
+        `RunnableDevEnvironment` also works when you fully control the
+        environment setup.
+      - The guard is safer for framework/plugin code because custom
+        environments may be fetchable or raw `DevEnvironment`.
+      - The runner API is `runner.import(...)`.
+
+      Answer the discussion.
+checks:
+  - type: response_contains
+    params:
+      pattern: "RunnableDevEnvironment"
+    weight: 2.0
+  - type: response_contains
+    params:
+      pattern: "isRunnableDevEnvironment"
+    weight: 1.0
+  - type: response_not_contains
+    params:
+      pattern: "(could not|cannot|can't|unable to) (verify|confirm)"
+      case_insensitive: true
+  - type: no_tool_calls
+    params: {}

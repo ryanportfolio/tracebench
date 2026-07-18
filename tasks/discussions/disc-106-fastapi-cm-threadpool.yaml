@@ -1,0 +1,64 @@
+id: disc-106-fastapi-cm-threadpool
+family: discussions
+title: "FastAPI: contextmanager_in_threadpool deviates from PEP 343"
+provenance:
+  source_workflow: githelp-discussions-answering
+  source_type: public
+  note: >-
+    Real public thread: https://github.com/fastapi/fastapi/discussions/15973
+    (answered). Thread excerpt quoted verbatim (trimmed); the
+    repository-context block is curated from the thread's accepted answer.
+    Fetched 2026-07-18.
+messages:
+  - role: system
+    content: >-
+      You answer GitHub Discussions questions for a repository. Only state
+      facts you can verify from the provided context. If the context does not
+      contain the answer, say you could not verify it. Cite the context you
+      relied on. Be concise and direct. Do not use any tools.
+  - role: user
+    content: |-
+      Discussion (fastapi/fastapi #15973): "Behavioral difference between
+      standard `with` and `contextmanager_in_threadpool`"
+
+      > I'm wrapping a sync context manager with contextmanager_in_threadpool.
+      > When __enter__ raises, I expect __exit__ to NOT be called, per PEP 343
+      > (the context was never entered). Instead, __exit__ IS called.
+      > Is this a real deviation, and is a fix known?
+
+      Repository context (curated from the accepted answer on the same thread):
+
+      - Confirmed: moving `__enter__` out of the `try` fixes the first issue
+        cleanly (and stops `__exit__` swallowing the `__enter__` exception
+        when it returned True).
+      - Two further PEP 343 deviations remain: the guard catches `Exception`
+        but not `BaseException` (so KeyboardInterrupt / SystemExit /
+        CancelledError raised in the body never reach `__exit__`; the guard
+        needs to be `except BaseException`), and a real anyio task
+        cancellation never reaches `__exit__` because the
+        `anyio.to_thread.run_sync` call is itself a cancellation checkpoint.
+      - The normal-exit branch has the same cancellation window; the fix is
+        to shield every `__exit__` thread call.
+
+      Answer the discussion.
+checks:
+  - type: response_contains
+    params:
+      pattern: "PEP 343"
+      case_insensitive: true
+    weight: 1.0
+  - type: response_contains
+    params:
+      pattern: "BaseException"
+    weight: 2.0
+  - type: response_contains
+    params:
+      pattern: "(shield|cancellation)"
+      case_insensitive: true
+    weight: 1.0
+  - type: response_not_contains
+    params:
+      pattern: "(could not|cannot|can't|unable to) (verify|confirm)"
+      case_insensitive: true
+  - type: no_tool_calls
+    params: {}

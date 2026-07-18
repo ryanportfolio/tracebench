@@ -1,0 +1,53 @@
+id: disc-105-fastapi-frontend-dot-fallback
+family: discussions
+title: "FastAPI: app.frontend() fallback 404s on client routes containing a dot"
+provenance:
+  source_workflow: githelp-discussions-answering
+  source_type: public
+  note: >-
+    Real public thread: https://github.com/fastapi/fastapi/discussions/15979
+    (answered). Thread excerpt quoted verbatim (trimmed); the
+    repository-context block is curated from the thread's accepted answer.
+    Fetched 2026-07-18.
+messages:
+  - role: system
+    content: >-
+      You answer GitHub Discussions questions for a repository. Only state
+      facts you can verify from the provided context. If the context does not
+      contain the answer, say you could not verify it. Cite the context you
+      relied on. Be concise and direct. Do not use any tools.
+  - role: user
+    content: |-
+      Discussion (fastapi/fastapi #15979): "app.frontend() with
+      fallback='index.html' returns 404 for client side routes that have a
+      dot in the last path segment (like /users/john.doe or /v/1.2.3)"
+
+      > Using the new `app.frontend()` helper with `fallback="index.html"`,
+      > a browser navigation to /users/john gets 200 and serves index.html,
+      > but /users/john.doe and /v/1.2.3 get 404. Is this intended?
+
+      Repository context (curated from the accepted answer on the same thread):
+
+      - Maintainer response: "Indeed, this should be fixed." The behavior is
+        confirmed as a bug, tracked in issue
+        https://github.com/fastapi/fastapi/issues/16010 with the fix PR at
+        https://github.com/fastapi/fastapi/pull/16011.
+
+      Answer the discussion.
+checks:
+  - type: response_contains
+    params:
+      pattern: "(16010|16011)"
+    weight: 2.0
+  - type: response_contains
+    params:
+      pattern: "(bug|should be fixed|confirmed|known issue)"
+      case_insensitive: true
+    weight: 1.0
+  - type: response_not_contains
+    params:
+      pattern: "(intended|by design|expected behavior)"
+      case_insensitive: true
+    weight: 1.0
+  - type: no_tool_calls
+    params: {}

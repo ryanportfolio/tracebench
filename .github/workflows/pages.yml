@@ -39,15 +39,14 @@ jobs:
           npm --prefix ui ci
           npm --prefix ui run build
 
-      # Until the first real sweep is published (phase 3), the public site
-      # carries a clearly-labeled demo run generated from the mock dry run.
-      - name: Stage demo run data
+      # The public site serves the committed, curated runs under results/runs.
+      - name: Stage published run data
         run: |
-          uv run tracebench run --config configs/dryrun.yaml --out .tmp/pages-runs/dryrun
+          uv sync --dev
           uv run tracebench ui-data \
-            --runs-dir .tmp/pages-runs \
+            --runs-dir results/runs \
             --out ui/dist/data \
-            --note "Demo data from the mock dry-run config (scripted responses, zero API spend). No real model results yet — the first published sweep replaces this."
+            --note "Early results: agent-product lane (subscription CLIs, product-level — model + vendor harness, no temperature/seed control). One practitioner's workflow-specific evals; N=3 per task, spread shown."
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,0 +1,56 @@
+id: disc-104-fastapi-lazy-openapi-validation
+family: discussions
+title: "FastAPI: invalid contact/license_info URL fails lazily at first /openapi.json"
+provenance:
+  source_workflow: githelp-discussions-answering
+  source_type: public
+  note: >-
+    Real public thread: https://github.com/fastapi/fastapi/discussions/15989
+    (answered). Thread excerpt quoted verbatim (trimmed); the
+    repository-context block is curated from the thread's accepted answer.
+    Fetched 2026-07-18.
+messages:
+  - role: system
+    content: >-
+      You answer GitHub Discussions questions for a repository. Only state
+      facts you can verify from the provided context. If the context does not
+      contain the answer, say you could not verify it. Cite the context you
+      relied on. Be concise and direct. Do not use any tools.
+  - role: user
+    content: |-
+      Discussion (fastapi/fastapi #15989): "Invalid contact/license_info URL
+      fails lazily at first /openapi.json request, not at app construction"
+
+      > FastAPI accepts `contact={"url": ...}` (and `license_info`) at app
+      > construction time without validating the URL. The value is only
+      > validated the first time `/openapi.json` is requested — so a mistake
+      > made when constructing `FastAPI(...)` doesn't surface until an
+      > unrelated request later, as a 500 buried in Starlette internals.
+      > Is there a way to make this fail at startup instead?
+
+      Repository context (curated from the accepted answer on the same thread):
+
+      - contact.url is only validated when the OpenAPI model is built, at
+        `OpenAPI(**output)` at the end of openapi/utils.py. FastAPI() stores
+        it as a raw dict at construction and builds the schema lazily on the
+        first /openapi.json or /docs hit, then caches it.
+      - To fail at startup: call `app.openapi()` once right after constructing
+        the app — same ValidationError on info.contact.url, but at the point
+        where the typo actually is. Checked on 0.115.0, unchanged on master.
+
+      Answer the discussion.
+checks:
+  - type: response_contains
+    params:
+      pattern: "app\\.openapi\\(\\)"
+    weight: 2.0
+  - type: response_contains
+    params:
+      pattern: "/openapi\\.json"
+    weight: 1.0
+  - type: response_not_contains
+    params:
+      pattern: "(could not|cannot|can't|unable to) (verify|confirm)"
+      case_insensitive: true
+  - type: no_tool_calls
+    params: {}

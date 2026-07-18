@@ -1,0 +1,59 @@
+id: disc-101-vite-oxc-drop-console
+family: discussions
+title: "Vite 8: where do Oxc minifier dropConsole options actually go?"
+provenance:
+  source_workflow: githelp-discussions-answering
+  source_type: public
+  note: >-
+    Real public thread: https://github.com/vitejs/vite/discussions/22767
+    (answered). Thread excerpt quoted verbatim; the repository-context block
+    is curated from the thread's accepted answer. Fetched 2026-07-18.
+messages:
+  - role: system
+    content: >-
+      You answer GitHub Discussions questions for a repository. Only state
+      facts you can verify from the provided context. If the context does not
+      contain the answer, say you could not verify it. Cite the context you
+      relied on. Be concise and direct. Do not use any tools.
+  - role: user
+    content: |-
+      Discussion (vitejs/vite #22767): "How to configure Oxc minifier to Drop Console in Vite 8?"
+
+      > Oxc has an option to remove console calls in its minifier, but it's
+      > behind an option. There's `build.minify: 'oxc'` but no way to specify
+      > options for the minifier in `build` [...] alternatively
+      > `build.rolldownOptions.output.minify.compress.dropConsole: true`
+      > without `build.minify: 'oxc'` works.
+      > Should I do both, or is the `rolldownOptions` enough? and should there
+      > be a property to configure oxc minifier (like `terserOptions`) in build?
+
+      Repository context (curated from the accepted answer on the same thread):
+
+      - Tested on vite@8.1.0 in lib mode: `build.minify: 'oxc'` on its own
+        leaves all console.* calls in; no compress config is plumbed through
+        that path.
+      - `build.rolldownOptions.output.minify.compress.dropConsole: true` is
+        what actually strips them, and works without also setting
+        `build.minify: 'oxc'` (oxc is already the minifier under the hood).
+      - Setting both gave byte-identical output to rolldownOptions alone.
+      - There is currently no terserOptions-style key for the oxc minifier in
+        `build`; routing compress options through
+        `build.rolldownOptions.output.minify` is the way for now.
+        `dropConsole` is a real rolldown CompressOptions field.
+
+      Answer the discussion.
+checks:
+  - type: response_contains
+    params:
+      pattern: "rolldownOptions"
+    weight: 2.0
+  - type: response_contains
+    params:
+      pattern: "dropConsole"
+    weight: 2.0
+  - type: response_not_contains
+    params:
+      pattern: "(could not|cannot|can't|unable to) (verify|confirm)"
+      case_insensitive: true
+  - type: no_tool_calls
+    params: {}

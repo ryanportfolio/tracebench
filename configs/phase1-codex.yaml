@@ -1,0 +1,19 @@
+# Phase 1 sweep, agent-product lane, Codex CLI.
+# Subscription-backed headless runs: zero marginal cost, so pricing is zero
+# and the budget cap is nominal. Product-level lane: measures the model plus
+# its product harness; the CLI version is recorded in every transcript.
+# No temperature/seed control in this lane — N=3 and reported spread carry
+# the repeatability story.
+name: phase1-codex
+tasks: tasks/discussions
+models:
+  - provider: codex
+    model_id: gpt-5.6-sol
+    params:
+      timeout_s: 600
+    pricing:
+      input_per_mtok: 0.0
+      output_per_mtok: 0.0
+runs_per_task: 3
+budget_usd: 0.01
+base_seed: 0
