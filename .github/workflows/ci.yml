@@ -30,3 +30,6 @@ jobs:
 
       - name: Dry run (mock provider, zero spend)
         run: uv run tracebench run --config configs/dryrun.yaml --out .tmp/ci-dryrun
+
+      - name: Render report from dry run
+        run: uv run tracebench report --run-dir .tmp/ci-dryrun --out .tmp/ci-report.html

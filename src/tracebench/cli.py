@@ -56,6 +56,14 @@ def _cmd_run(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_report(args: argparse.Namespace) -> int:
+    from tracebench.report import generate_report
+
+    out = generate_report(args.run_dir, args.out, title=args.title, note=args.note)
+    print(f"wrote {out}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="tracebench")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -68,6 +76,13 @@ def main(argv: list[str] | None = None) -> int:
     p_run.add_argument("--config", required=True)
     p_run.add_argument("--out", required=True, help="output directory for results + transcripts")
     p_run.set_defaults(func=_cmd_run)
+
+    p_report = sub.add_parser("report", help="render a static HTML report from a run directory")
+    p_report.add_argument("--run-dir", required=True, help="directory with results.json + jsonl")
+    p_report.add_argument("--out", required=True, help="output HTML file path")
+    p_report.add_argument("--title", default="tracebench results")
+    p_report.add_argument("--note", default="", help="banner note shown at the top of the page")
+    p_report.set_defaults(func=_cmd_report)
 
     args = parser.parse_args(argv)
     return args.func(args)

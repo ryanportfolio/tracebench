@@ -90,6 +90,20 @@ significance. Where something could not be verified, it is reported as "could
 not verify", never guessed. The framing throughout is neutral and
 evidence-first; the goal is understanding failure modes, not ranking vendors.
 
+## Results UI
+
+Every run renders to a single self-contained HTML page — leaderboard by task
+family, per-task mean ± spread, and a browsable transcript viewer with
+per-check verdicts and the full pinned config:
+
+```sh
+uv run tracebench report --run-dir .tmp/dryrun --out .tmp/report.html
+```
+
+The latest report publishes automatically to GitHub Pages on every push to
+`main` (a clearly-labeled mock-data demo until the first real sweep lands):
+<https://ryanportfolio.github.io/tracebench/>
+
 ## Quickstart
 
 Requires [uv](https://docs.astral.sh/uv/).

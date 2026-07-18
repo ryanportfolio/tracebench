@@ -1,0 +1,56 @@
+name: Publish report to Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      # Until the first real sweep is published (phase 3), the public page is
+      # a clearly-labeled demo generated from the mock dry run.
+      - name: Generate demo report
+        run: |
+          uv run tracebench run --config configs/dryrun.yaml --out .tmp/pages-run
+          mkdir -p .tmp/site
+          uv run tracebench report \
+            --run-dir .tmp/pages-run \
+            --out .tmp/site/index.html \
+            --title "tracebench — demo report" \
+            --note "Demo report generated from the mock dry-run config (scripted responses, zero API spend). No real model results yet — the first published sweep replaces this page."
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .tmp/site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
