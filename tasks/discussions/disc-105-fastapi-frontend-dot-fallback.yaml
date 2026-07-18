@@ -46,7 +46,9 @@ checks:
     weight: 1.0
   - type: response_not_contains
     params:
-      pattern: "(intended|by design|expected behavior)"
+      # Lookbehind excludes negated mentions ("not intended behavior" is a
+      # correct answer); only an affirmative "intended/by design" claim fails.
+      pattern: "(?<!not )(?<!isn't )(intended behavior|by design|expected behavior|is intended)"
       case_insensitive: true
     weight: 1.0
   - type: no_tool_calls

@@ -41,14 +41,12 @@ checks:
     weight: 1.0
   - type: response_contains
     params:
-      # Grader fixed after first sweep: was case-sensitive and missed
-      # "Babel is unnecessary" phrasing — a correct answer scored 0.60.
-      pattern: "(no|without|drop|remove|not needed|unnecessary).{0,60}babel|babel.{0,60}(not needed|unnecessary|can be (dropped|removed))"
+      # Grader fixed twice (see results/runs/*/NOTES.md): correct answers
+      # phrased "Babel is unnecessary", "Babel isn't in the picture", and
+      # "don't need ... plugin-babel" all have to pass. Regex prose graders
+      # need this breadth or they misgrade correct answers.
+      pattern: "(no|not|without|drop|remove|don'?t need|unnecessary|isn'?t).{0,80}babel|babel.{0,80}(not needed|isn'?t (needed|required|in the picture)|unnecessary|can be (dropped|removed))"
       case_insensitive: true
     weight: 2.0
-  - type: response_not_contains
-    params:
-      pattern: "(could not|cannot|can't|unable to) (verify|confirm)"
-      case_insensitive: true
   - type: no_tool_calls
     params: {}

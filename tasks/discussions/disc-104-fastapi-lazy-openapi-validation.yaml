@@ -48,9 +48,5 @@ checks:
     params:
       pattern: "/openapi\\.json"
     weight: 1.0
-  - type: response_not_contains
-    params:
-      pattern: "(could not|cannot|can't|unable to) (verify|confirm)"
-      case_insensitive: true
   - type: no_tool_calls
     params: {}

@@ -1,0 +1,136 @@
+{
+  "config": {
+    "name": "phase1-claude-code",
+    "tasks": "tasks/discussions",
+    "models": [
+      {
+        "provider": "claude-code",
+        "model_id": "claude-sonnet-5",
+        "params": {
+          "timeout_s": 600
+        },
+        "pricing": {
+          "input_per_mtok": 0.0,
+          "output_per_mtok": 0.0
+        }
+      }
+    ],
+    "runs_per_task": 3,
+    "budget_usd": 0.01,
+    "base_seed": 0,
+    "mock_script": null
+  },
+  "halted_on_budget": false,
+  "total_cost_usd": 0.0,
+  "n_transcripts": 30,
+  "by_task": [
+    {
+      "task_id": "disc-101-vite-oxc-drop-console",
+      "family": "discussions",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "disc-102-vite-runnable-env",
+      "family": "discussions",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "disc-103-vite-oxc-react-compiler",
+      "family": "discussions",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "disc-104-fastapi-lazy-openapi-validation",
+      "family": "discussions",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "disc-105-fastapi-frontend-dot-fallback",
+      "family": "discussions",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "disc-106-fastapi-cm-threadpool",
+      "family": "discussions",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "disc-107-vite-rollup-fallback-refusal",
+      "family": "discussions",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "disc-108-vite-css-transform-refusal",
+      "family": "discussions",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "disc-109-fastapi-recursion-refusal",
+      "family": "discussions",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "disc-110-fastapi-cookie-docs-refusal",
+      "family": "discussions",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    }
+  ],
+  "by_family": [
+    {
+      "family": "discussions",
+      "model_id": "claude-sonnet-5",
+      "n_tasks": 10,
+      "mean_of_task_means": 1.0
+    }
+  ]
+}

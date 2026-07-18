@@ -64,6 +64,15 @@ def _cmd_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_regrade(args: argparse.Namespace) -> int:
+    from tracebench.regrade import regrade_run
+
+    report = regrade_run(args.run_dir, args.tasks, args.out)
+    _print_report(report)
+    print(f"\nregraded {report.n_transcripts} transcript(s) -> {args.out} (no model calls)")
+    return 0
+
+
 def _cmd_schema(args: argparse.Namespace) -> int:
     from tracebench.uidata import export_schemas
 
@@ -106,6 +115,14 @@ def main(argv: list[str] | None = None) -> int:
     p_report.add_argument("--title", default="tracebench results")
     p_report.add_argument("--note", default="", help="banner note shown at the top of the page")
     p_report.set_defaults(func=_cmd_report)
+
+    p_regrade = sub.add_parser(
+        "regrade", help="rescore a stored run with current graders (no model calls)"
+    )
+    p_regrade.add_argument("--run-dir", required=True, help="directory with results.json + jsonl")
+    p_regrade.add_argument("--tasks", required=True, help="tasks directory the run used")
+    p_regrade.add_argument("--out", required=True, help="output directory for regraded artifacts")
+    p_regrade.set_defaults(func=_cmd_regrade)
 
     p_schema = sub.add_parser("schema", help="export model JSON Schemas (the UI type contract)")
     p_schema.add_argument("--out", required=True, help="directory to write *.schema.json into")
