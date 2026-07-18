@@ -1,0 +1,10 @@
+# Scripted mock responses per task id, used by configs/dryrun.yaml.
+# This one passes every check of disc-000-schema-example, so a clean dry run
+# shows a perfect score — proving the graders wire through correctly.
+tasks:
+  disc-000-schema-example:
+    text: >-
+      Based on docs/cli.md, the CLI does not appear to support a --dry-run
+      flag: the documented flags are --verbose and --config PATH only. I could
+      not verify any dry-run capability from the provided context, so if it
+      exists it is undocumented.
