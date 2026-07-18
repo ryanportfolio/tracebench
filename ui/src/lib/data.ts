@@ -20,7 +20,7 @@ export interface ManifestRun {
 
 export interface Manifest {
   runs: ManifestRun[]
-  /** optional banner (e.g. "demo data — no real model results yet") */
+  /** optional banner shown under the top bar */
   note?: string
 }
 
@@ -68,6 +68,10 @@ async function fetchOk(url: string): Promise<Response> {
 
 export async function loadManifest(baseUrl = 'data'): Promise<Manifest> {
   return (await fetchOk(`${baseUrl}/manifest.json`)).json()
+}
+
+export async function loadRunReport(dir: string, baseUrl = 'data'): Promise<RunReport> {
+  return (await fetchOk(`${baseUrl}/${dir}/results.json`)).json()
 }
 
 export async function loadRun(
