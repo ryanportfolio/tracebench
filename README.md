@@ -1,20 +1,52 @@
 # tracebench
 
-Replayable agent evals distilled from real developer workflows.
+[![CI](https://github.com/ryanportfolio/tracebench/actions/workflows/ci.yml/badge.svg)](https://github.com/ryanportfolio/tracebench/actions/workflows/ci.yml)
+[![Live results](https://img.shields.io/badge/results-live%20dashboard-blue)](https://ryanportfolio.github.io/tracebench/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-Most public evals are synthetic: invented tasks, invented failure modes. The
-tasks here are distilled from one practitioner's real agent workflows, and
-every task carries a provenance note tying it back to the workflow it came
-from — at the strength that's actually true, stated per family. The
-discussions family comes from a modest but real side workflow (agent-assisted
-answering of public GitHub Discussions); it anchors v1 because it is fully
-public-source and deterministically gradable. The tool-use and long-horizon
-families (in progress) carry the heavier provenance: they come from months of
-daily agent-driven development across live products.
+**Can your AI coding agent admit it's wrong?**
 
-**Status: phase 0.** Harness skeleton, mock provider, task schema, CI. No
-model results yet — a headline results table lands here with the first
-published sweep (phase 3).
+tracebench replays real moments from months of daily agent-assisted
+development — the agent claimed something worked without checking, said
+"I can't" when it could, trusted stale data after a silently failed command —
+and scores what today's agent products actually do at exactly those decision
+points.
+
+- **Real, not invented.** Every task is distilled from a real developer
+  session and carries a provenance note tying it back to the workflow it came
+  from — at the strength that's actually true, stated per family. Private
+  material is never published; such tasks are labeled synthetic
+  reconstructions ([privacy rule](#privacy-rule)).
+- **Reproducible.** Grading is deterministic (weighted pattern checklists,
+  no hidden judge). Anyone can re-run scoring over the published transcripts
+  and get the identical numbers — CI re-verifies this on every push and
+  weekly ([`scripts/check_regrade_drift.py`](scripts/check_regrade_drift.py)).
+- **Receipts included.** Every transcript, per-check verdict, score, and
+  grader change is committed to this repo. Failures are annotated, not
+  hidden — they are the product.
+
+## Results at a glance
+
+Agent-product lane: each model driven through its real CLI harness
+(`claude -p`, `codex exec`), N=3 runs per task, scores are mean of task means.
+
+| Task family | What it tests | claude-sonnet-5 (Claude Code CLI) | gpt-5.6-sol (Codex CLI) |
+|---|---|---:|---:|
+| `discussions` (10 tasks) | verify facts before answering; refuse when unverifiable | 1.00 | 1.00 |
+| `correction` (8 tasks) | own mistakes and self-correct under user pushback | 0.96 | 0.81 |
+
+Headline finding so far: both products reliably deny a destructive action
+they didn't take and propose safe read-only checks — but almost never
+recognize that their own earlier "everything is fine" claim rested on stale
+local state after a silently failed fetch (`corr-208`, the hardest task in
+the suite: 0.78 vs 0.63). Full failure analysis per run in
+[`results/runs/*/NOTES.md`](results/runs/).
+
+**Explore every transcript in the [live dashboard](https://ryanportfolio.github.io/tracebench/).**
+
+New results land automatically: a weekly scheduled sweep re-runs the suite
+through both CLIs, self-checks reproducibility, and publishes the dated run
+(`results/runs/sched-*`).
 
 ## What this measures
 
@@ -115,9 +147,8 @@ Two presentation layers, same artifacts, both derived only from
   uv run tracebench ui --runs-dir .tmp/runs              # http://127.0.0.1:8321
   ```
 
-  The same build deploys to GitHub Pages on every push to `main`
-  (clearly-labeled mock-data demo until the first real sweep lands):
-  <https://ryanportfolio.github.io/tracebench/>
+  The same build deploys to GitHub Pages on every push to `main`, serving
+  the committed published runs: <https://ryanportfolio.github.io/tracebench/>
 
 - **Static report** (`tracebench report --run-dir … --out report.html`): a
   single self-contained HTML file per run — the archival layer that gets
@@ -156,20 +187,23 @@ taxonomy.md        living failure taxonomy, linking to example transcripts
 
 ## Roadmap
 
-- **Phase 0 (this)** — scaffold, harness skeleton, mock provider, CI, plus
+- ✅ **Phase 0** — scaffold, harness skeleton, mock provider, CI, plus
   agent-product lane adapters (Claude Code, Codex CLI).
-- **Phase 1** — anchor family: ~10 discussions-answering tasks from public
-  threads, deterministic graders, first real API provider end-to-end.
-- **Phase 2** — tool-use family with injected failures; second and third
-  providers; N≥3 run protocol.
-- **Phase 3** — long-horizon family; LLM-judge lane with agreement check;
-  first full sweep; publish results and taxonomy v1.
-- **Phase 4** — transcript annotation polish; first trace-teardown write-up
-  from the best failure.
+- ✅ **Phase 1** — anchor family: 10 discussions-answering tasks from public
+  threads, deterministic graders, both CLI lanes swept and published
+  (both products saturate the family at 1.00).
+- ✅ **Phase 2** — correction family: 8 frozen decision points from real
+  sessions, both lanes swept, grader calibration trail published; weekly
+  automated sweeps + CI reproducibility gate.
+- **Phase 3** — tool-use family with injected failures; API lane end-to-end.
+- **Phase 4** — long-horizon family; LLM-judge lane with agreement check;
+  taxonomy v1 fully populated with example transcripts.
+- **Phase 5** — transcript annotation polish; trace-teardown write-ups from
+  the best failures.
 
 ## Links
 
-- Portfolio hub: [corewise.academy/about](https://corewise.academy/about)
+- Author / write-ups: [corewise.academy/about](https://corewise.academy/about)
 
 ## License
 
