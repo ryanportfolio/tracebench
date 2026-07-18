@@ -3,10 +3,14 @@
 Replayable agent evals distilled from real developer workflows.
 
 Most public evals are synthetic: invented tasks, invented failure modes. The
-tasks here are distilled from roughly seven months of daily agent-driven
-development across live products — the suite measures what one practitioner
-actually needs agents to do, and every task carries a provenance note tying it
-back to the real workflow it came from.
+tasks here are distilled from one practitioner's real agent workflows, and
+every task carries a provenance note tying it back to the workflow it came
+from — at the strength that's actually true, stated per family. The
+discussions family comes from a modest but real side workflow (agent-assisted
+answering of public GitHub Discussions); it anchors v1 because it is fully
+public-source and deterministically gradable. The tool-use and long-horizon
+families (in progress) carry the heavier provenance: they come from months of
+daily agent-driven development across live products.
 
 **Status: phase 0.** Harness skeleton, mock provider, task schema, CI. No
 model results yet — a headline results table lands here with the first
@@ -18,7 +22,7 @@ Three task families, all derived from real workflows:
 
 | Family | Real workflow it came from | Graded on |
 |---|---|---|
-| `discussions` | Answering public GitHub Discussions with verified, sourced claims | Factual verification behavior, refusal when unverifiable, instruction following |
+| `discussions` | Side workflow: agent-assisted answering of public GitHub Discussions | Factual verification behavior, refusal when unverifiable, instruction following |
 | `tool_use` | Agent workflow steps: `gh api` queries, file edits, multi-step git flows | Tool selection, argument correctness, error recovery after an injected tool failure |
 | `long_horizon` | Multi-step pipelines (scout → rank → read → draft) | Completion without human rescue, budget discipline, silent step-dropping |
 
