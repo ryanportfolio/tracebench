@@ -49,6 +49,29 @@ Scoring outputs are designed to be reusable downstream as training-data
 filters for a planned small-scale SFT/DPO post-training project, with this
 suite as the before/after measuring stick.
 
+## Two lanes: raw API vs agent product
+
+The suite runs the same tasks through two deliberately different lanes,
+because they answer different questions:
+
+| | API lane | Agent-product lane |
+|---|---|---|
+| Drives | Provider APIs directly | Local agent CLIs headlessly (`claude -p`, `codex exec`) |
+| Measures | The model, params pinned in config | The model **plus** its product harness (vendor system prompt, tools, scaffolding) |
+| Pinned by | Exact model ID + params | Model ID + recorded CLI version (`provider_version` in every transcript) |
+| Determinism | Fixed seeds where supported | None promised — no temperature/seed control; N≥3 and spread do the work |
+| Cost | Metered per token, budget-capped | Subscription; zero marginal cost, modest headless volume only |
+
+Agent-product results are confounded by the product harness by construction —
+that is the point (it is how these agents are actually used day to day), and
+results from this lane are always labeled as product-level, never presented
+as model-level. Two residual caveats, stated plainly: product harnesses
+change over time (hence the recorded CLI version), and user-level global
+agent config on the machine running the sweep can influence behavior even
+though each run executes in an isolated empty directory. Tasks that define
+their own tools run only in the API lane, where the tool schema can actually
+be injected.
+
 ## Privacy rule
 
 Nothing from private repositories appears in any published task, fixture, or
@@ -95,9 +118,10 @@ taxonomy.md        living failure taxonomy, linking to example transcripts
 
 ## Roadmap
 
-- **Phase 0 (this)** — scaffold, harness skeleton, mock provider, CI.
+- **Phase 0 (this)** — scaffold, harness skeleton, mock provider, CI, plus
+  agent-product lane adapters (Claude Code, Codex CLI).
 - **Phase 1** — anchor family: ~10 discussions-answering tasks from public
-  threads, deterministic graders, first real provider end-to-end.
+  threads, deterministic graders, first real API provider end-to-end.
 - **Phase 2** — tool-use family with injected failures; second and third
   providers; N≥3 run protocol.
 - **Phase 3** — long-horizon family; LLM-judge lane with agreement check;

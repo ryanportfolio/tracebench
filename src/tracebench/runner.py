@@ -105,6 +105,7 @@ def run(config: RunConfig, out_dir: str | Path) -> RunReport:
         if halted:
             break
         provider = build_provider(model_cfg, config)
+        provider_version = provider.describe_version()
         for task in tasks:
             if halted:
                 break
@@ -119,6 +120,7 @@ def run(config: RunConfig, out_dir: str | Path) -> RunReport:
                         family=task.family,
                         provider=model_cfg.provider,
                         model_id=model_cfg.model_id,
+                        provider_version=provider_version,
                         run_index=run_index,
                         seed=seed,
                         input_messages=task.messages,

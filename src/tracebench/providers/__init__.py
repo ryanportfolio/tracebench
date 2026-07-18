@@ -21,16 +21,28 @@ class Provider(ABC):
         """Run one task once. Must be deterministic for a fixed seed where the
         underlying API supports it; the seed is always recorded either way."""
 
+    def describe_version(self) -> str:
+        """Version of the thing under test beyond the model id (e.g. the CLI
+        product version in the agent-product lane). Empty when the model id
+        alone pins the behavior."""
+        return ""
+
 
 class UnknownProviderError(ValueError):
     pass
 
 
 def build_provider(model_cfg: ModelConfig, run_cfg: RunConfig) -> Provider:
+    from tracebench.providers.cli_agents import ClaudeCodeProvider, CodexProvider
     from tracebench.providers.mock import MockProvider
 
     if model_cfg.provider == "mock":
         return MockProvider.from_run_config(run_cfg)
+    if model_cfg.provider == "claude-code":
+        return ClaudeCodeProvider()
+    if model_cfg.provider == "codex":
+        return CodexProvider()
     raise UnknownProviderError(
-        f"unknown provider: {model_cfg.provider!r} (phase 0 ships only 'mock')"
+        f"unknown provider: {model_cfg.provider!r} "
+        "(available: mock, claude-code, codex; raw-API providers land in phase 1+)"
     )

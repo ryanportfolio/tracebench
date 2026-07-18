@@ -123,6 +123,7 @@ class Transcript(BaseModel):
     family: TaskFamily
     provider: str
     model_id: str
+    provider_version: str = ""
     run_index: int
     seed: int
     input_messages: list[Message]
