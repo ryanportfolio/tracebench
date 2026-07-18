@@ -1,0 +1,188 @@
+{
+  "$defs": {
+    "CheckResult": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "default": "",
+          "title": "Detail",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "weight": {
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "type",
+        "passed",
+        "weight"
+      ],
+      "title": "CheckResult",
+      "type": "object"
+    },
+    "Message": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "title": "Content",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "system",
+            "user",
+            "assistant",
+            "tool"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "Message",
+      "type": "object"
+    },
+    "TaskFamily": {
+      "enum": [
+        "discussions",
+        "tool_use",
+        "long_horizon"
+      ],
+      "title": "TaskFamily",
+      "type": "string"
+    },
+    "ToolCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "additionalProperties": true,
+          "title": "Arguments",
+          "type": "object"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "ToolCall",
+      "type": "object"
+    },
+    "Usage": {
+      "additionalProperties": false,
+      "properties": {
+        "input_tokens": {
+          "default": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "default": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        }
+      },
+      "title": "Usage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One graded run of one task against one model. The unit of publication.\n\nDesigned to be reusable downstream as a training-data filter: it carries\nthe full input, the full output, per-check grades, and an overall score.",
+  "properties": {
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/CheckResult"
+      },
+      "title": "Checks",
+      "type": "array"
+    },
+    "cost_usd": {
+      "title": "Cost Usd",
+      "type": "number"
+    },
+    "family": {
+      "$ref": "#/$defs/TaskFamily"
+    },
+    "input_messages": {
+      "items": {
+        "$ref": "#/$defs/Message"
+      },
+      "title": "Input Messages",
+      "type": "array"
+    },
+    "model_id": {
+      "title": "Model Id",
+      "type": "string"
+    },
+    "output_text": {
+      "title": "Output Text",
+      "type": "string"
+    },
+    "provider": {
+      "title": "Provider",
+      "type": "string"
+    },
+    "provider_version": {
+      "default": "",
+      "title": "Provider Version",
+      "type": "string"
+    },
+    "run_index": {
+      "title": "Run Index",
+      "type": "integer"
+    },
+    "score": {
+      "title": "Score",
+      "type": "number"
+    },
+    "seed": {
+      "title": "Seed",
+      "type": "integer"
+    },
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    },
+    "tool_calls": {
+      "items": {
+        "$ref": "#/$defs/ToolCall"
+      },
+      "title": "Tool Calls",
+      "type": "array"
+    },
+    "usage": {
+      "$ref": "#/$defs/Usage"
+    }
+  },
+  "required": [
+    "task_id",
+    "family",
+    "provider",
+    "model_id",
+    "run_index",
+    "seed",
+    "input_messages",
+    "output_text",
+    "tool_calls",
+    "usage",
+    "cost_usd",
+    "checks",
+    "score"
+  ],
+  "title": "Transcript",
+  "type": "object"
+}

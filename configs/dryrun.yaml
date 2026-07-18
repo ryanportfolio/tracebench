@@ -1,0 +1,18 @@
+# Dry-run config: mock provider only, zero API spend.
+# Proves the harness end-to-end (load -> complete -> grade -> aggregate -> report).
+name: dryrun
+tasks: tasks
+models:
+  - provider: mock
+    model_id: mock-baseline
+    params:
+      temperature: 0.0
+      max_tokens: 1024
+    # Fake pricing so cost accounting and the budget cap are exercised for real.
+    pricing:
+      input_per_mtok: 3.0
+      output_per_mtok: 15.0
+runs_per_task: 3
+budget_usd: 1.0
+base_seed: 42
+mock_script: configs/mock-script.yaml

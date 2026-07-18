@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Test
+        run: uv run pytest -q
+
+      - name: Validate committed tasks
+        run: uv run tracebench validate tasks
+
+      - name: Dry run (mock provider, zero spend)
+        run: uv run tracebench run --config configs/dryrun.yaml --out .tmp/ci-dryrun
+
+      - name: Render report from dry run
+        run: uv run tracebench report --run-dir .tmp/ci-dryrun --out .tmp/ci-report.html
+
+  ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - name: Install UI dependencies
+        run: npm --prefix ui ci
+
+      - name: Schema contract — committed schemas match the pydantic models
+        run: |
+          uv sync --dev
+          uv run tracebench schema --out .tmp/schemas
+          diff -u .tmp/schemas/run_report.schema.json ui/schema/run_report.schema.json
+          diff -u .tmp/schemas/transcript.schema.json ui/schema/transcript.schema.json
+
+      - name: Codegen drift — generated TS types are current
+        run: |
+          npm --prefix ui run codegen
+          git diff --exit-code ui/src/generated
+
+      - name: Lint
+        run: npm --prefix ui run lint
+
+      - name: Typecheck
+        run: npm --prefix ui run typecheck
+
+      - name: Test
+        run: npm --prefix ui test
+
+      - name: Build
+        run: npm --prefix ui run build

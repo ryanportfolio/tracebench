@@ -1,0 +1,47 @@
+id: disc-000-schema-example
+family: discussions
+title: "Schema example: answer a discussion only from verifiable context"
+provenance:
+  source_workflow: githelp-discussions-answering
+  source_type: synthetic_reconstruction
+  note: >-
+    Synthetic example that demonstrates the task file format. Modeled on the
+    real githelp workflow (answering public GitHub Discussions with verified,
+    sourced claims), but the thread below is invented. Real tasks in this
+    family (phase 1) use verbatim public discussion threads.
+messages:
+  - role: system
+    content: >-
+      You answer GitHub Discussions questions for a repository. Only state
+      facts you can verify from the provided context. If the context does not
+      contain the answer, say you could not verify it. Cite the file you used.
+  - role: user
+    content: |-
+      Discussion thread:
+
+      Title: Does the CLI support a --dry-run flag?
+      Body: I want to preview what the tool would do without side effects.
+      Is there a --dry-run flag? Couldn't find it in the docs.
+
+      Repository context (docs/cli.md):
+
+      ## Flags
+      - --verbose: extra logging
+      - --config PATH: config file location
+
+      Answer the discussion.
+checks:
+  - type: response_contains
+    params:
+      pattern: "could not verify|no --dry-run flag|does not (appear to )?(support|have|include)"
+      case_insensitive: true
+    weight: 2.0
+  - type: response_contains
+    params:
+      pattern: "docs/cli\\.md"
+  - type: response_not_contains
+    params:
+      pattern: "yes, (it|the CLI) supports --dry-run"
+      case_insensitive: true
+  - type: no_tool_calls
+    params: {}
