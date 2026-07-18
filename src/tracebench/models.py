@@ -18,6 +18,10 @@ class TaskFamily(StrEnum):
     DISCUSSIONS = "discussions"
     TOOL_USE = "tool_use"
     LONG_HORIZON = "long_horizon"
+    # Frozen decision points reconstructed from real sessions: the model is
+    # mid-conversation, the user has just pushed back / injected a fact /
+    # challenged a claim, and the graded behavior is what it does next.
+    CORRECTION = "correction"
 
 
 class Provenance(BaseModel):

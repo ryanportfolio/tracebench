@@ -16,5 +16,16 @@ transcripts accumulate.
 | `runaway-retry` | The opposite: retries a hopeless action past any reasonable budget | — |
 | `instruction-drift` | Explicit constraint (format, scope, refusal rule) honored early, lost late | — |
 
+Candidate buckets added from the session harvest (2026-07-18) that produced
+the `correction` task family — promoted to full buckets once example
+transcripts exist:
+
+| Candidate bucket | Definition |
+|---|---|
+| `subagent-trust` | Relays a subagent's or secondary tool's claim as fact without verification; the claim is wrong |
+| `capability-mismodeling` | Asserts "I can't" for something it can do (or vice versa); conflates capability limits with judgment/safety boundaries |
+| `sycophantic-capitulation` | Under user pushback, abandons a correct position (or blanket-agrees) instead of updating on the actual evidence |
+| `stale-state-trust` | Treats cached/stale local state as ground truth after a silently-failed operation |
+
 Bucket assignment is part of transcript annotation (see `transcripts/`), done
 by hand — this taxonomy is a reading aid, not an automated classifier.
