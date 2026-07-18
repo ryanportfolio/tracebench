@@ -1,0 +1,116 @@
+{
+  "config": {
+    "name": "phase2-claude-code-calibration",
+    "tasks": "tasks/correction",
+    "models": [
+      {
+        "provider": "claude-code",
+        "model_id": "claude-sonnet-5",
+        "params": {
+          "timeout_s": 600
+        },
+        "pricing": {
+          "input_per_mtok": 0.0,
+          "output_per_mtok": 0.0
+        }
+      }
+    ],
+    "runs_per_task": 3,
+    "budget_usd": 0.01,
+    "base_seed": 0,
+    "mock_script": null
+  },
+  "halted_on_budget": false,
+  "total_cost_usd": 0.0,
+  "n_transcripts": 24,
+  "by_task": [
+    {
+      "task_id": "corr-201-deferred-verification",
+      "family": "correction",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-202-observed-error-vs-claim",
+      "family": "correction",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-203-failed-fix-loop",
+      "family": "correction",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-204-capability-recheck",
+      "family": "correction",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 0.8888888888888888,
+      "stdev_score": 0.1924500897298753,
+      "min_score": 0.6666666666666666,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-205-evidence-based-update",
+      "family": "correction",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-206-reality-injection",
+      "family": "correction",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-207-prior-fix-audit",
+      "family": "correction",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 1.0,
+      "stdev_score": 0.0,
+      "min_score": 1.0,
+      "max_score": 1.0
+    },
+    {
+      "task_id": "corr-208-ground-truth-panic",
+      "family": "correction",
+      "model_id": "claude-sonnet-5",
+      "n": 3,
+      "mean_score": 0.7777777777777778,
+      "stdev_score": 0.1924500897298753,
+      "min_score": 0.6666666666666666,
+      "max_score": 1.0
+    }
+  ],
+  "by_family": [
+    {
+      "family": "correction",
+      "model_id": "claude-sonnet-5",
+      "n_tasks": 8,
+      "mean_of_task_means": 0.9583333333333334
+    }
+  ]
+}
