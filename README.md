@@ -92,17 +92,31 @@ evidence-first; the goal is understanding failure modes, not ranking vendors.
 
 ## Results UI
 
-Every run renders to a single self-contained HTML page — leaderboard by task
-family, per-task mean ± spread, and a browsable transcript viewer with
-per-check verdicts and the full pinned config:
+Two presentation layers, same artifacts, both derived only from
+`results.json` + `transcripts.jsonl`:
 
-```sh
-uv run tracebench report --run-dir .tmp/dryrun --out .tmp/report.html
-```
+- **Dashboard app** (`ui/`, React + TypeScript): run picker, family
+  leaderboard, sortable per-task table, and a transcript explorer with
+  model/family/verdict filters and full-text search. Serve it over local
+  runs with one command:
 
-The latest report publishes automatically to GitHub Pages on every push to
-`main` (a clearly-labeled mock-data demo until the first real sweep lands):
-<https://ryanportfolio.github.io/tracebench/>
+  ```sh
+  npm --prefix ui install && npm --prefix ui run build   # once
+  uv run tracebench ui --runs-dir .tmp/runs              # http://127.0.0.1:8321
+  ```
+
+  The same build deploys to GitHub Pages on every push to `main`
+  (clearly-labeled mock-data demo until the first real sweep lands):
+  <https://ryanportfolio.github.io/tracebench/>
+
+- **Static report** (`tracebench report --run-dir … --out report.html`): a
+  single self-contained HTML file per run — the archival layer that gets
+  committed alongside published results and works from `file://` forever.
+
+The UI's TypeScript types are generated from the harness's pydantic models
+via exported JSON Schema (`uv run tracebench schema --out ui/schema`, then
+`npm --prefix ui run codegen`); CI fails if the schemas, the generated types,
+or the models drift apart.
 
 ## Quickstart
 

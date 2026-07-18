@@ -64,6 +64,29 @@ def _cmd_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_schema(args: argparse.Namespace) -> int:
+    from tracebench.uidata import export_schemas
+
+    for path in export_schemas(args.out):
+        print(f"wrote {path}")
+    return 0
+
+
+def _cmd_ui_data(args: argparse.Namespace) -> int:
+    from tracebench.uidata import stage_ui_data
+
+    manifest = stage_ui_data(args.runs_dir, args.out, note=args.note)
+    print(f"wrote {manifest}")
+    return 0
+
+
+def _cmd_ui(args: argparse.Namespace) -> int:
+    from tracebench.uiserver import serve
+
+    serve(args.runs_dir, port=args.port)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="tracebench")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -83,6 +106,21 @@ def main(argv: list[str] | None = None) -> int:
     p_report.add_argument("--title", default="tracebench results")
     p_report.add_argument("--note", default="", help="banner note shown at the top of the page")
     p_report.set_defaults(func=_cmd_report)
+
+    p_schema = sub.add_parser("schema", help="export model JSON Schemas (the UI type contract)")
+    p_schema.add_argument("--out", required=True, help="directory to write *.schema.json into")
+    p_schema.set_defaults(func=_cmd_schema)
+
+    p_ui_data = sub.add_parser("ui-data", help="stage run directories + manifest for the UI")
+    p_ui_data.add_argument("--runs-dir", required=True, help="directory containing run subdirs")
+    p_ui_data.add_argument("--out", required=True, help="output data directory")
+    p_ui_data.add_argument("--note", default="", help="banner note shown in the UI")
+    p_ui_data.set_defaults(func=_cmd_ui_data)
+
+    p_ui = sub.add_parser("ui", help="serve the dashboard UI over local runs")
+    p_ui.add_argument("--runs-dir", required=True, help="directory containing run subdirs")
+    p_ui.add_argument("--port", type=int, default=8321)
+    p_ui.set_defaults(func=_cmd_ui)
 
     args = parser.parse_args(argv)
     return args.func(args)

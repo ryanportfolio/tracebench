@@ -28,22 +28,31 @@ jobs:
       - name: Install dependencies
         run: uv sync --dev
 
-      # Until the first real sweep is published (phase 3), the public page is
-      # a clearly-labeled demo generated from the mock dry run.
-      - name: Generate demo report
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - name: Build dashboard UI
         run: |
-          uv run tracebench run --config configs/dryrun.yaml --out .tmp/pages-run
-          mkdir -p .tmp/site
-          uv run tracebench report \
-            --run-dir .tmp/pages-run \
-            --out .tmp/site/index.html \
-            --title "tracebench — demo report" \
-            --note "Demo report generated from the mock dry-run config (scripted responses, zero API spend). No real model results yet — the first published sweep replaces this page."
+          npm --prefix ui ci
+          npm --prefix ui run build
+
+      # Until the first real sweep is published (phase 3), the public site
+      # carries a clearly-labeled demo run generated from the mock dry run.
+      - name: Stage demo run data
+        run: |
+          uv run tracebench run --config configs/dryrun.yaml --out .tmp/pages-runs/dryrun
+          uv run tracebench ui-data \
+            --runs-dir .tmp/pages-runs \
+            --out ui/dist/data \
+            --note "Demo data from the mock dry-run config (scripted responses, zero API spend). No real model results yet — the first published sweep replaces this."
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .tmp/site
+          path: ui/dist
 
   deploy:
     needs: build

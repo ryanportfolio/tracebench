@@ -1,0 +1,231 @@
+{
+  "$defs": {
+    "FamilyAggregate": {
+      "additionalProperties": false,
+      "properties": {
+        "family": {
+          "title": "Family",
+          "type": "string"
+        },
+        "mean_of_task_means": {
+          "title": "Mean Of Task Means",
+          "type": "number"
+        },
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "n_tasks": {
+          "title": "N Tasks",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "family",
+        "model_id",
+        "n_tasks",
+        "mean_of_task_means"
+      ],
+      "title": "FamilyAggregate",
+      "type": "object"
+    },
+    "ModelConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "pricing": {
+          "$ref": "#/$defs/Pricing"
+        },
+        "provider": {
+          "title": "Provider",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider",
+        "model_id",
+        "pricing"
+      ],
+      "title": "ModelConfig",
+      "type": "object"
+    },
+    "Pricing": {
+      "additionalProperties": false,
+      "description": "USD per million tokens. Pinned in config so cost math is auditable.",
+      "properties": {
+        "input_per_mtok": {
+          "minimum": 0,
+          "title": "Input Per Mtok",
+          "type": "number"
+        },
+        "output_per_mtok": {
+          "minimum": 0,
+          "title": "Output Per Mtok",
+          "type": "number"
+        }
+      },
+      "required": [
+        "input_per_mtok",
+        "output_per_mtok"
+      ],
+      "title": "Pricing",
+      "type": "object"
+    },
+    "RunConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "base_seed": {
+          "default": 0,
+          "title": "Base Seed",
+          "type": "integer"
+        },
+        "budget_usd": {
+          "exclusiveMinimum": 0,
+          "title": "Budget Usd",
+          "type": "number"
+        },
+        "mock_script": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mock Script"
+        },
+        "models": {
+          "items": {
+            "$ref": "#/$defs/ModelConfig"
+          },
+          "minItems": 1,
+          "title": "Models",
+          "type": "array"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "runs_per_task": {
+          "default": 3,
+          "minimum": 1,
+          "title": "Runs Per Task",
+          "type": "integer"
+        },
+        "tasks": {
+          "title": "Tasks",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "tasks",
+        "models",
+        "budget_usd"
+      ],
+      "title": "RunConfig",
+      "type": "object"
+    },
+    "TaskAggregate": {
+      "additionalProperties": false,
+      "properties": {
+        "family": {
+          "title": "Family",
+          "type": "string"
+        },
+        "max_score": {
+          "title": "Max Score",
+          "type": "number"
+        },
+        "mean_score": {
+          "title": "Mean Score",
+          "type": "number"
+        },
+        "min_score": {
+          "title": "Min Score",
+          "type": "number"
+        },
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "n": {
+          "title": "N",
+          "type": "integer"
+        },
+        "stdev_score": {
+          "title": "Stdev Score",
+          "type": "number"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_id",
+        "family",
+        "model_id",
+        "n",
+        "mean_score",
+        "stdev_score",
+        "min_score",
+        "max_score"
+      ],
+      "title": "TaskAggregate",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "by_family": {
+      "items": {
+        "$ref": "#/$defs/FamilyAggregate"
+      },
+      "title": "By Family",
+      "type": "array"
+    },
+    "by_task": {
+      "items": {
+        "$ref": "#/$defs/TaskAggregate"
+      },
+      "title": "By Task",
+      "type": "array"
+    },
+    "config": {
+      "$ref": "#/$defs/RunConfig"
+    },
+    "halted_on_budget": {
+      "title": "Halted On Budget",
+      "type": "boolean"
+    },
+    "n_transcripts": {
+      "title": "N Transcripts",
+      "type": "integer"
+    },
+    "total_cost_usd": {
+      "title": "Total Cost Usd",
+      "type": "number"
+    }
+  },
+  "required": [
+    "config",
+    "halted_on_budget",
+    "total_cost_usd",
+    "n_transcripts",
+    "by_task",
+    "by_family"
+  ],
+  "title": "RunReport",
+  "type": "object"
+}
