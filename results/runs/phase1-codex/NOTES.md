@@ -27,6 +27,14 @@ This is the discipline the project claims: graders are code, grader bugs are
 false claims about model behavior, and transcripts get read before scores
 get published.
 
+## Regrade note (2026-07-18, same day)
+
+The claude-code sweep forced a second round of grader fixes (details in
+`../phase1-claude-code/NOTES.md`). This run's published scores were then
+regenerated with `tracebench regrade` against the fixed graders so both
+published runs share one grader version. Scores were unchanged (still
+10/10 at 1.00); model outputs are byte-identical to the original sweep.
+
 ## Honest read of the 1.00 board
 
 A clean board is a statement about the *suite*, not just the model: at this

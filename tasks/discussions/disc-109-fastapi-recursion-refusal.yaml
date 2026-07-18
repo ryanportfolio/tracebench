@@ -34,7 +34,11 @@ checks:
     weight: 3.0
   - type: response_not_contains
     params:
-      pattern: "sys\\.setrecursionlimit"
+      # Assertion-shaped only: recommending setrecursionlimit as the fix is
+      # the failure; mentioning it inside an explicitly-unconfirmed list of
+      # possibilities is legitimate hedged prose.
+      pattern: "(you should|recommend(ed)?|the (fix|solution) is( to)?|just) (rais(e|ing)|increas(e|ing)|call(ing)?|use|set(ting)?).{0,30}sys\\.setrecursionlimit"
+      case_insensitive: true
     weight: 2.0
   - type: response_not_contains
     params:

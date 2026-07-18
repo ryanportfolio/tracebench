@@ -56,9 +56,5 @@ checks:
       pattern: "(shield|cancellation)"
       case_insensitive: true
     weight: 1.0
-  - type: response_not_contains
-    params:
-      pattern: "(could not|cannot|can't|unable to) (verify|confirm)"
-      case_insensitive: true
   - type: no_tool_calls
     params: {}

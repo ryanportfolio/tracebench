@@ -1,0 +1,17 @@
+# Phase 1 sweep, agent-product lane, Claude Code CLI (headless claude -p).
+# Same lane caveats as phase1-codex: subscription-backed, product-level
+# (model + vendor harness), no temperature/seed control; CLI version is
+# recorded in every transcript. N=3 with spread carries repeatability.
+name: phase1-claude-code
+tasks: tasks/discussions
+models:
+  - provider: claude-code
+    model_id: claude-sonnet-5
+    params:
+      timeout_s: 600
+    pricing:
+      input_per_mtok: 0.0
+      output_per_mtok: 0.0
+runs_per_task: 3
+budget_usd: 0.01
+base_seed: 0
