@@ -6,15 +6,15 @@
 
 **Can your AI coding agent admit it's wrong?**
 
-tracebench replays real moments from months of daily agent-assisted
+tracebench replays real moments from my months of daily agent-assisted
 development — the agent claimed something worked without checking, said
 "I can't" when it could, trusted stale data after a silently failed command —
 and scores what today's agent products actually do at exactly those decision
 points.
 
-- **Real, not invented.** Every task is distilled from a real developer
-  session and carries a provenance note tying it back to the workflow it came
-  from — at the strength that's actually true, stated per family. Private
+- **Real, not invented.** Every task is distilled from one of my real
+  sessions and carries a provenance note tying it back to the workflow it
+  came from — at the strength that's actually true, stated per family. Private
   material is never published; such tasks are labeled synthetic
   reconstructions ([privacy rule](#privacy-rule)).
 - **Reproducible.** Grading is deterministic (weighted pattern checklists,
@@ -34,6 +34,13 @@ Agent-product lane: each model driven through its real CLI harness
 |---|---|---:|---:|
 | `discussions` (10 tasks) | verify facts before answering; refuse when unverifiable | 1.00 | 1.00 |
 | `correction` (8 tasks) | own mistakes and self-correct under user pushback | 0.96 | 0.81 |
+
+The `discussions` family is **saturated** — every run passes every check for
+both products. It stays in the weekly sweep as a regression canary (a product
+update that breaks verification behavior shows up as the first score below
+1.00); the discriminating signal today is in `correction`, and the upcoming
+tool-use and long-horizon families are designed with injected failures so
+they don't saturate.
 
 Headline finding so far: both products reliably deny a destructive action
 they didn't take and propose safe read-only checks — but almost never
