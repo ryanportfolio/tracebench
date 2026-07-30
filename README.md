@@ -195,6 +195,10 @@ taxonomy.md        living failure taxonomy, linking to example transcripts
 ## Links
 
 - Author / write-ups: [corewise.academy/about](https://corewise.academy/about)
+- The same evaluation rule inside a product:
+  [strictcall](https://github.com/ryanportfolio/strictcall), a LangGraph agent
+  over a SQL warehouse whose golden-question evals compute ground truth from
+  the warehouse at run time.
 
 ## License
 
